@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">DCCT</string>
+    <string name="Immediate_access">立即进入</string>
+    <string name="title_login">登录</string>
+    <string name="title_register">注册</string>
+    <string name="todo">TODO</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="remember_me">Remember me</string>
+    <string name="forget_password">Forget Password?</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="username">Username</string>
+    <string name="password_again">Password Again</string>
+    <string name="title_input">请填写注册信息</string>
+    <string name="title_activity_main2">MainActivity2</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="ground">广场</string>
+    <string name="navi_test">检测</string>
+    <string name="navi_record">记录</string>
+    <string name="nav_username_title">Joson</string>
+    <string name="nav_title">广场</string>
+</resources>

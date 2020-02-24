@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_ground">
+
+    <fragment
+        android:id="@+id/navigation_ground"
+        android:name="com.example.dcct.ui.fragment.GroundFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_ground" >
+        <action
+            android:id="@+id/action_navigation_ground_to_navigation_record"
+            app:destination="@id/navigation_record" />
+        <action
+            android:id="@+id/action_navigation_ground_to_navigation_record2"
+            app:destination="@id/navigation_record" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_gauging"
+        android:name="com.example.dcct.ui.fragment.GaugingFragment"
+        android:label="@string/title_dashboard"
+        tools:layout="@layout/fragment_gauging" >
+        <action
+            android:id="@+id/action_navigation_gauging_to_navigation_ground"
+            app:destination="@id/navigation_ground" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_record"
+        android:name="com.example.dcct.ui.fragment.RecordFragment"
+        android:label="@string/title_notifications"
+        tools:layout="@layout/fragment_record" >
+        <action
+            android:id="@+id/action_navigation_record_to_navigation_gauging"
+            app:destination="@id/navigation_gauging" />
+        <action
+            android:id="@+id/action_navigation_record_to_navigation_ground"
+            app:destination="@id/navigation_ground" />
+    </fragment>
+</navigation>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_ground"
+        android:icon="@drawable/ic_knowledge_32dp"
+        android:title="@string/ground" />
+
+    <item
+        android:id="@+id/navigation_gauging"
+        android:icon="@drawable/ic_guaging_32dp"
+        android:title="@string/navi_test" />
+
+    <item
+        android:id="@+id/navigation_record"
+        android:icon="@drawable/ic_record_32dp"
+        android:title="@string/navi_record" />
+
+</menu>
