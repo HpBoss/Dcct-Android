@@ -37,7 +37,6 @@ import java.util.Objects;
 
 public class GaugingFragment extends Fragment implements QueryCallback {
 
-
     private ViewPager mViewPager;
     private MAndMFragment mMAndMFragment;
     private MAndFoodFragment mMAndFoodFragment;

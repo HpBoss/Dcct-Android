@@ -1,6 +1,7 @@
 package com.example.dcct.ui.activity;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -14,27 +15,28 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.dcct.R;
 import com.example.dcct.base.BaseActivity;
+import com.example.dcct.databinding.ActivityGuideBinding;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class GuideActivity extends BaseActivity implements ViewPager.OnPageChangeListener,View.OnClickListener{
-    private Button comeIndex;
-    private ViewPager guidePicture;
-    private LinearLayout indicator;
     private int mCurrentItem = 0;
     private List<Integer> guideList = new ArrayList<>();
+    private ActivityGuideBinding mBinding;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_guide);
-        initView();
+        mBinding = ActivityGuideBinding.inflate( LayoutInflater.from( this ) );
+        setContentView(mBinding.getRoot());
+
+        mBinding.comeIndex.setOnClickListener(this);
         getData();
         addGuidePicture();
-        indicator.getChildAt(0).setEnabled(true);
-        guidePicture.addOnPageChangeListener(this);
-        guidePicture.setAdapter(new PagerAdapter() {
+        mBinding.indicate.getChildAt(0).setEnabled(true);
+        mBinding.viewPager.addOnPageChangeListener(this);
+        mBinding.viewPager.setAdapter( new PagerAdapter() {
             @Override
             public int getCount() {
                 return guideList.size();
@@ -68,12 +70,6 @@ public class GuideActivity extends BaseActivity implements ViewPager.OnPageChang
         guideList.add(R.drawable.guide3);
     }
 
-    private void initView() {
-        comeIndex = findViewById(R.id.comeIndex);
-        indicator = findViewById(R.id.indicate);
-        guidePicture = findViewById(R.id.viewPager);
-        comeIndex.setOnClickListener(this);
-    }
 
     private void getData() {
         View view;
@@ -89,7 +85,7 @@ public class GuideActivity extends BaseActivity implements ViewPager.OnPageChang
                 layoutParams.leftMargin = 30;
             }
             //添加到LinearLayout
-            indicator.addView(view, layoutParams);
+            mBinding.indicate.addView(view, layoutParams);
         }
     }
 
@@ -102,15 +98,15 @@ public class GuideActivity extends BaseActivity implements ViewPager.OnPageChang
     public void onPageSelected(int position) {
         //当滑动至最后一页时，隐藏指示器，显示按钮
         if (position==2){
-            indicator.setVisibility(View.GONE);
-            comeIndex.setVisibility(View.VISIBLE);
+            mBinding.indicate.setVisibility(View.GONE);
+            mBinding.comeIndex.setVisibility(View.VISIBLE);
         }else {
-            indicator.setVisibility(View.VISIBLE);
-            comeIndex.setVisibility(View.GONE);
+            mBinding.indicate.setVisibility(View.VISIBLE);
+            mBinding.comeIndex.setVisibility(View.GONE);
         }
         //指示器变化效果
-        indicator.getChildAt(mCurrentItem).setEnabled(false);
-        indicator.getChildAt(position).setEnabled(true);
+        mBinding.indicate.getChildAt(mCurrentItem).setEnabled(false);
+        mBinding.indicate.getChildAt(position).setEnabled(true);
         mCurrentItem = position;
     }
 

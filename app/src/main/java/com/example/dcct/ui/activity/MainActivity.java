@@ -4,12 +4,14 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.dcct.databinding.ActivityMainBinding;
 import com.example.dcct.model.internet.model.BackResultData;
 import com.example.dcct.presenter.Imp.SignOutPresenterImp;
 import com.example.dcct.presenter.SignOutPresenter;
@@ -20,12 +22,10 @@ import com.example.dcct.base.BaseActivity;
 import com.example.dcct.ui.fragment.GaugingFragment;
 import com.example.dcct.view.SignOutCallback;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.tabs.TabLayout;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
@@ -37,21 +37,19 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 public class MainActivity extends BaseActivity implements GaugingFragment.transmitFragment, SignOutCallback {
 
     private NavController mNavController;
-    private BottomNavigationView mNavView;
-    private TextView mTitleFragment;
     private MAndMFragment mMAndMFragment;
     private MAndFoodFragment mMAndFoodFragment;
-    private TabLayout mTabLayout;
     private int oldId;
     private int secondId;
     private static String[] titleArray = new String[]{"广场","消息"};
     private SignOutPresenter mSignOutPresenter;
+    private ActivityMainBinding mBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.activity_main);
+        mBinding = ActivityMainBinding.inflate( LayoutInflater.from( this ) );
+        setContentView(mBinding.getRoot());
         addStatusViewWithColor(this,getResources().getColor(R.color.colorPrimary));
         initView();
 //        if (savedInstanceState != null) {
@@ -89,25 +87,20 @@ public class MainActivity extends BaseActivity implements GaugingFragment.transm
 //        }
 //    }
     private void initView() {
-        Toolbar toolbar = findViewById(R.id.mainToolbar);
-        mTitleFragment = findViewById(R.id.title_fragment);
-        TextView titleName = findViewById( R.id.title_username );
 //        UserDatabase userDatabase = UserDatabase.getInstance( this );
 //        UserDao userDao = userDatabase.getUserDao();
 //        mTitleName.setText( userDao.getNickName() );
         SharedPreferences preferences = getSharedPreferences( "SHARE_APP_DATA", Context.MODE_PRIVATE );
-        titleName.setText( preferences.getString( "nickname","XX" ) );
-        titleName.setOnClickListener( v -> {
+        mBinding.titleUsername.setText( preferences.getString( "nickname","XX" ) );
+        mBinding.titleUsername.setOnClickListener( v -> {
             displayAlertDialog();
         } );
         /*从服务器获取用户名使用mTitleName显示出来*/
-        mTabLayout = findViewById(R.id.tabSegment);
-        toolbar.setTitle("");
-        setSupportActionBar(toolbar);
+        mBinding.mainToolbar.setTitle("");
+        setSupportActionBar(mBinding.mainToolbar);
 
-        mNavView = findViewById(R.id.nav_view);
-        oldId = mNavView.getMenu().getItem(0).getItemId();
-        secondId = mNavView.getMenu().getItem(1).getItemId();
+        oldId = mBinding.navView.getMenu().getItem(0).getItemId();
+        secondId = mBinding.navView.getMenu().getItem(1).getItemId();
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -123,7 +116,7 @@ public class MainActivity extends BaseActivity implements GaugingFragment.transm
 
 
     public void setupWithNavControllers() {
-        mNavView.setOnNavigationItemSelectedListener(
+        mBinding.navView.setOnNavigationItemSelectedListener(
                 item -> {
                     int itemId = item.getItemId();
                     switch (itemId){
@@ -142,7 +135,7 @@ public class MainActivity extends BaseActivity implements GaugingFragment.transm
                     return true;
                 } );
         final WeakReference<BottomNavigationView> weakReference =
-                new WeakReference<>(mNavView);
+                new WeakReference<>(mBinding.navView);
         mNavController.addOnDestinationChangedListener(
                 new NavController.OnDestinationChangedListener() {
                     @Override
@@ -242,14 +235,14 @@ public class MainActivity extends BaseActivity implements GaugingFragment.transm
     }
 
     private void clickGaugingChangeTitle() {
-        mTitleFragment.setVisibility(View.GONE);
-        mTabLayout.setVisibility(View.VISIBLE);
+        mBinding.titleFragment.setVisibility(View.GONE);
+        mBinding.tabSegment.setVisibility(View.VISIBLE);
     }
 
     public void clickChangeTitle(String title){
-        mTitleFragment.setVisibility(View.VISIBLE);
-        mTitleFragment.setText(title);
-        mTabLayout.setVisibility(View.GONE);
+        mBinding.titleFragment.setVisibility(View.VISIBLE);
+        mBinding.titleFragment.setText(title);
+        mBinding.tabSegment.setVisibility(View.GONE);
     }
 
     @Override
