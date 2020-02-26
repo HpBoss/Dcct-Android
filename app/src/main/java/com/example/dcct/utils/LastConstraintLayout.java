@@ -29,34 +29,37 @@ public class LastConstraintLayout extends ConstraintLayout {
         int count = this.getChildCount();
         for (int i = 0; i < count ; i++) {
             View child = this.getChildAt(i);
-//            int width =View.MeasureSpec.makeMeasureSpec(0, MeasureSpec.AT_MOST);
-//            int height =View.MeasureSpec.makeMeasureSpec(0, MeasureSpec.AT_MOST);
-//            child.measure(width,height);
-//            int heights=child.getMeasuredHeight();
-//            int widths=child.getMeasuredWidth();
-            LayoutParams layoutParams = (LayoutParams) child.getLayoutParams();
-            if (layoutParams.width != RelativeLayout.LayoutParams.MATCH_PARENT && layoutParams.width != RelativeLayout.LayoutParams.WRAP_CONTENT && layoutParams.width != 0) {
-                layoutParams.width = (int) (layoutParams.width*scaleX);
+            LayoutParams lp = (LayoutParams) child.getLayoutParams();
+
+            int childWithMeasureSpec = getChildMeasureSpec( widthMeasureSpec,this.getPaddingLeft()+this.getPaddingRight() ,lp.width );
+            int childHeightMeasureSpec = getChildMeasureSpec( heightMeasureSpec,this.getPaddingBottom() + this.getPaddingTop(), lp.height);
+            child.measure(childWithMeasureSpec,childHeightMeasureSpec);
+            int heights=child.getMeasuredHeight();
+            int widths=child.getMeasuredWidth();
+            //这样就得到了child的高度和宽度
+
+            if (lp.width != RelativeLayout.LayoutParams.MATCH_PARENT && lp.width != RelativeLayout.LayoutParams.WRAP_CONTENT && lp.width != 0) {
+                lp.width = (int) (lp.width*scaleX);
             }
-            if (layoutParams.height != RelativeLayout.LayoutParams.MATCH_PARENT && layoutParams.height != RelativeLayout.LayoutParams.WRAP_CONTENT && layoutParams.height != 0){
-                layoutParams.height = (int) (layoutParams.height*scaleY);
+            if (lp.height != RelativeLayout.LayoutParams.MATCH_PARENT && lp.height != RelativeLayout.LayoutParams.WRAP_CONTENT && lp.height != 0){
+                lp.height = (int) (lp.height*scaleY);
             }
-            layoutParams.baselineToBaseline = (int) (layoutParams.baselineToBaseline*scaleX);
-            layoutParams.bottomToBottom = (int) (layoutParams.bottomToBottom*scaleY);
-            layoutParams.leftMargin = (int) (layoutParams.leftMargin*scaleX);
-            layoutParams.rightMargin = (int) (layoutParams.rightMargin*scaleX);
-            layoutParams.topMargin = (int) (layoutParams.topMargin*scaleY);
-            layoutParams.bottomMargin = (int) (layoutParams.bottomMargin*scaleY);
-            layoutParams.bottomToTop = (int) (layoutParams.bottomToTop*scaleY);
-            layoutParams.bottomToBottom = (int) (layoutParams.bottomToBottom*scaleY);
-            layoutParams.endToEnd = (int) (layoutParams.endToEnd*scaleX);
-            layoutParams.endToStart = (int) (layoutParams.endToStart*scaleX);
-            layoutParams.startToEnd = (int) (layoutParams.startToEnd*scaleX);
-            layoutParams.startToStart = (int) (layoutParams.startToStart*scaleX);
-            layoutParams.matchConstraintDefaultHeight = (int) (layoutParams.matchConstraintDefaultHeight*scaleY);
-            layoutParams.matchConstraintDefaultWidth = (int) (layoutParams.matchConstraintDefaultWidth*scaleX);
-            layoutParams.matchConstraintPercentHeight = (int) (layoutParams.matchConstraintPercentHeight*scaleY);
-            layoutParams.matchConstraintPercentWidth = (int) (layoutParams.matchConstraintPercentWidth*scaleX);
+            lp.baselineToBaseline = (int) (lp.baselineToBaseline*scaleX);
+            lp.bottomToBottom = (int) (lp.bottomToBottom*scaleY);
+            lp.leftMargin = (int) (lp.leftMargin*scaleX);
+            lp.rightMargin = (int) (lp.rightMargin*scaleX);
+            lp.topMargin = (int) (lp.topMargin*scaleY);
+            lp.bottomMargin = (int) (lp.bottomMargin*scaleY);
+            lp.bottomToTop = (int) (lp.bottomToTop*scaleY);
+            lp.bottomToBottom = (int) (lp.bottomToBottom*scaleY);
+            lp.endToEnd = (int) (lp.endToEnd*scaleX);
+            lp.endToStart = (int) (lp.endToStart*scaleX);
+            lp.startToEnd = (int) (lp.startToEnd*scaleX);
+            lp.startToStart = (int) (lp.startToStart*scaleX);
+            lp.matchConstraintDefaultHeight = (int) (lp.matchConstraintDefaultHeight*scaleY);
+            lp.matchConstraintDefaultWidth = (int) (lp.matchConstraintDefaultWidth*scaleX);
+            lp.matchConstraintPercentHeight = (int) (lp.matchConstraintPercentHeight*scaleY);
+            lp.matchConstraintPercentWidth = (int) (lp.matchConstraintPercentWidth*scaleX);
         }
     }
 }

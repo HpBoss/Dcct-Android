@@ -21,9 +21,11 @@ import com.example.dcct.model.internet.model.LoginUserEntity;
 import com.example.dcct.model.internet.model.UserEntity;
 import com.example.dcct.presenter.Imp.LoginPresenterImp;
 import com.example.dcct.presenter.LoginPresenter;
-import com.example.dcct.utils.SnackBarUtil;
 import com.example.dcct.view.LoginCallback;
 import com.google.android.material.textfield.TextInputLayout;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class LoginFragment extends Fragment implements LoginCallback {
@@ -56,6 +58,17 @@ public class LoginFragment extends Fragment implements LoginCallback {
         login = view.findViewById(R.id.iv_login);
         contentView = view.findViewById( R.id.snackBarLogin );
 
+        if (textInputLayoutEmail.getEditText() != null) {
+            textInputLayoutEmail.getEditText().setOnFocusChangeListener( (v, hasFocus) -> {
+                if (!hasFocus) {
+                    if (!formatDecision( textInputLayoutEmail.getEditText().getText().toString() )){
+                        textInputLayoutEmail.setError( "邮箱格式错误" );
+                    }else {
+                        textInputLayoutEmail.setErrorEnabled( false );
+                    }
+                }
+            } );
+        }
     }
 
     @Override
@@ -66,15 +79,23 @@ public class LoginFragment extends Fragment implements LoginCallback {
                 email = textInputLayoutEmail.getEditText().getText().toString();
                 password = textInputLayoutPwd.getEditText().getText().toString();
 
-                //向服务器提交数据
-                mLoginPresenter = new LoginPresenterImp();
-                mLoginPresenter.registerCallBack( this );
-                LoginUserEntity loginUserEntity = new LoginUserEntity(email,password);
-                mLoginPresenter.postLoginData( loginUserEntity );
-                //在onLoadLoginData方法中接受数据
+                if (email.contentEquals( "" ) && !password.contentEquals( "" )){
+                    Toast.makeText( getActivity(),"邮箱号为空" ,Toast.LENGTH_SHORT).show();
+                }else if (!email.contentEquals( "" ) && password.contentEquals( "" )){
+                    Toast.makeText( getActivity(),"密码为空" ,Toast.LENGTH_SHORT).show();
+                }else if (email.contentEquals( "" ) && password.contentEquals( "" )){
+                    Toast.makeText( getActivity(),"邮箱、密码均为空！" ,Toast.LENGTH_SHORT).show();
+                }else{
+                    //向服务器提交数据
+                    mLoginPresenter = new LoginPresenterImp();
+                    mLoginPresenter.registerCallBack( this );
+                    LoginUserEntity loginUserEntity = new LoginUserEntity(email,password);
+                    mLoginPresenter.postLoginData( loginUserEntity );
+                    //在onLoadLoginData方法中接受数据
+                }
+
             }
         } );
-
     }
 
     @Override
@@ -151,5 +172,12 @@ public class LoginFragment extends Fragment implements LoginCallback {
     public void onDetach() {
         super.onDetach();
         mInformationDetermine = null;
+    }
+
+    private boolean formatDecision(String email) {
+        String regEx1 = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
+        Pattern p = Pattern.compile(regEx1);
+        Matcher m = p.matcher(email);
+        return m.matches();
     }
 }

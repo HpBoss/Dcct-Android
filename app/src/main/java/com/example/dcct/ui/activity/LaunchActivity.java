@@ -4,16 +4,22 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.LayoutInflater;
 
-import com.example.dcct.R;
 import com.example.dcct.base.BaseActivity;
+import com.example.dcct.databinding.ActivityLaunchBinding;
 
 public class LaunchActivity extends BaseActivity {
     private SharedPreferences preferences;
+    private ActivityLaunchBinding mBinding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_launch);
+//        BaseActivity.setCustomDensity( this,getApplication());
+        mBinding = ActivityLaunchBinding.inflate( LayoutInflater.from( this ) );
+        setContentView(mBinding.getRoot());
+
         new Handler().postDelayed( () -> {
             preferences = getSharedPreferences("SHARE_APP_TAG", Context.MODE_PRIVATE );
             if (isFirstStart()){

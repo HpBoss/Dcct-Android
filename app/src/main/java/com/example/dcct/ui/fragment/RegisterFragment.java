@@ -15,7 +15,7 @@ import com.example.dcct.model.internet.model.BackResultData;
 import com.example.dcct.model.internet.model.RegisterUserEntity;
 import com.example.dcct.presenter.Imp.RegisterPresenterImp;
 import com.example.dcct.presenter.RegisterPresenter;
-import com.example.dcct.utils.InputContentListenerUtils;
+import com.example.dcct.utils.PasswordMatchingUtils;
 import com.example.dcct.R;
 import com.example.dcct.utils.SnackBarUtil;
 import com.example.dcct.view.RegisterCallback;
@@ -61,7 +61,7 @@ public class RegisterFragment extends Fragment implements RegisterCallback {
         textInputLayoutPwdAgain = view.findViewById(R.id.textInputLayoutPwdAgain);
         if (textInputLayoutPwd.getEditText() != null){
             textInputLayoutPwd.getEditText().addTextChangedListener(new
-                    InputContentListenerUtils(textInputLayoutPwd,textInputLayoutPwdAgain,0));
+                    PasswordMatchingUtils(textInputLayoutPwd,textInputLayoutPwdAgain,0));
         }
         register = view.findViewById(R.id.iv_register);
         contentView = view.findViewById(R.id.snackBarHint );
@@ -72,7 +72,7 @@ public class RegisterFragment extends Fragment implements RegisterCallback {
         super.onActivityCreated(savedInstanceState);
         if (textInputLayoutPwdAgain.getEditText() != null) {
             textInputLayoutPwdAgain.getEditText().addTextChangedListener(
-                    new InputContentListenerUtils(textInputLayoutPwd,textInputLayoutPwdAgain,1));
+                    new PasswordMatchingUtils(textInputLayoutPwd,textInputLayoutPwdAgain,1));
             register.setOnClickListener(v -> {
                 username = textInputLayoutUserName.getEditText().getText().toString();
                 email = textInputLayoutEmail.getEditText().getText().toString();
