@@ -13,6 +13,8 @@ import com.example.dcct.view.RegisterCallback;
 import java.util.Objects;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 
@@ -24,24 +26,15 @@ public class RegisterPresenterImp implements RegisterPresenter {
     @Override
     public void postRegisterInfor(RegisterUserEntity registerUserEntity) {
         InternetAPI internetAPI = NetWorkApi.getInstance().getService();
-        internetAPI.submitRegisterData( registerUserEntity )
+        Disposable subscribe = internetAPI.submitRegisterData( registerUserEntity )
                 .subscribeOn( Schedulers.io() )
                 .observeOn( AndroidSchedulers.mainThread() )
-                .subscribe( new BaseObserver<BackResultData>() {
-                    @Override
-                    public void onSuccess(BackResultData backResultData) {
-                        Log.d(TAG, "注册 ==》"+ backResultData.toString());
-                        if (mCallback != null) {
-                            mCallback.onLoadRegisterData( backResultData );
-                        }
+                .subscribe( backResultData -> {
+                    Log.d( TAG, "注册 ==》" + backResultData.toString() );
+                    if (mCallback != null) {
+                        mCallback.onLoadRegisterData( backResultData );
                     }
-
-                    @Override
-                    public void onFailure(Throwable e) {
-                        Log.d(TAG, Objects.requireNonNull(e.getMessage()));
-                    }
-                } );
-
+                }, throwable -> Log.d( TAG, Objects.requireNonNull( throwable.getMessage() ) ) );
     }
 
     @Override

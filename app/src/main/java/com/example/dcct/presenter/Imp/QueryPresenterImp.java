@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Objects;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 public class QueryPresenterImp implements QueryPresenter {
@@ -24,24 +26,15 @@ public class QueryPresenterImp implements QueryPresenter {
     @Override
     public void postQueryInformation(PostQueryEntity postQueryEntity) {
         InternetAPI internetApi = NetWorkApi.getInstance().getService();
-        internetApi.submitQueryData( postQueryEntity )
+        Disposable subscribe = internetApi.submitQueryData( postQueryEntity )
                 .subscribeOn( Schedulers.io() )
                 .observeOn( AndroidSchedulers.mainThread() )
-                .subscribe( new BaseObserver<BackResultData<List<QueryResultEntity>>>() {
-                    @Override
-                    public void onSuccess(BackResultData<List<QueryResultEntity>> listBackResultData) {
-                        Log.d(TAG, "查询结果 ==》"+ listBackResultData.toString());
-                        if (mQueryCallback != null) {
-                            mQueryCallback.onLoadQueryData( listBackResultData );
-                        }
+                .subscribe( listBackResultData -> {
+                    Log.d( TAG, "查询结果 ==》" + listBackResultData.toString() );
+                    if (mQueryCallback != null) {
+                        mQueryCallback.onLoadQueryData( listBackResultData );
                     }
-
-                    @Override
-                    public void onFailure(Throwable e) {
-                        Log.d(TAG, Objects.requireNonNull(e.getMessage()));
-                    }
-                } );
-
+                }, throwable -> Log.d( TAG, Objects.requireNonNull( throwable.getMessage() ) ) );
     }
 
     @Override
