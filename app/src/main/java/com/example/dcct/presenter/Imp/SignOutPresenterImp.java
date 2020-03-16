@@ -11,6 +11,7 @@ import com.example.dcct.view.SignOutCallback;
 
 import java.util.Objects;
 
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -23,15 +24,21 @@ public class SignOutPresenterImp implements SignOutPresenter {
     @Override
     public void postSignOutId(long uid) {
         InternetAPI internetApi = NetWorkApi.getInstance().getService();
-        Disposable subscribe = internetApi.subSignOutId( uid )
-                .subscribeOn( Schedulers.io() )
-                .observeOn( AndroidSchedulers.mainThread() )
-                .subscribe( backResultData -> {
-                    Log.d( TAG, "退出登录 ==》" + backResultData.toString() );
-                    if (mSignOutCallback != null) {
-                        mSignOutCallback.onLoadSignOutSuccess( backResultData );
+        Observable<BackResultData> compose = internetApi.subSignOutId( uid )
+                .compose( NetWorkApi.applySchedulers( new BaseObserver<BackResultData>() {
+                    @Override
+                    public void onSuccess(BackResultData backResultData) {
+                        Log.d( TAG, "退出登录 ==》" + backResultData.toString() );
+                        if (mSignOutCallback != null) {
+                            mSignOutCallback.onLoadSignOutSuccess( backResultData );
+                        }
                     }
-                }, throwable -> Log.d( TAG, Objects.requireNonNull( throwable.getMessage() ) ) );
+
+                    @Override
+                    public void onFailure(Throwable e) {
+                        Log.d( TAG, Objects.requireNonNull( e.getMessage() ) );
+                    }
+                } ) );
     }
 
     @Override

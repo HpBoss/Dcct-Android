@@ -13,6 +13,7 @@ import com.example.dcct.view.LoginCallback;
 
 import java.util.Objects;
 
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -25,17 +26,21 @@ public class LoginPresenterImp implements LoginPresenter {
     @Override
     public void postLoginData(LoginUserEntity loginUserEntity) {
         InternetAPI internetAPI = NetWorkApi.getInstance().getService();
-        Disposable subscribe = internetAPI.submitLoginData( loginUserEntity )
-                .subscribeOn( Schedulers.io() )
-                .observeOn( AndroidSchedulers.mainThread() )
-                .subscribe( userEntityBackResultData -> {
-                    Log.d(TAG, "登录 ==》"+ userEntityBackResultData.toString());
-                    if (mCallback != null) {
-                        mCallback.onLoadLoginData( userEntityBackResultData );
+        Observable<BackResultData<UserEntity>> compose = internetAPI.submitLoginData( loginUserEntity )
+                .compose( NetWorkApi.applySchedulers( new BaseObserver<BackResultData<UserEntity>>() {
+                    @Override
+                    public void onSuccess(BackResultData<UserEntity> userEntityBackResultData) {
+                        Log.d( TAG, "登录 ==》" + userEntityBackResultData.toString() );
+                        if (mCallback != null) {
+                            mCallback.onLoadLoginData( userEntityBackResultData );
+                        }
                     }
-                }, throwable -> {
-                    Log.d(TAG, "登录 ==》"+ Objects.requireNonNull(throwable.getMessage()));
-                } );
+
+                    @Override
+                    public void onFailure(Throwable e) {
+                        Log.d( TAG, "登录 ==》" + Objects.requireNonNull( e.getMessage() ) );
+                    }
+                } ) );
     }
 
     @Override

@@ -13,6 +13,7 @@ import com.example.dcct.view.RecordCallback;
 import java.util.List;
 import java.util.Objects;
 
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -25,15 +26,21 @@ public class RecordPresenterImp implements RecordPresenter {
     @Override
     public void getAllQueryRecord(long id) {
         InternetAPI internetApi = NetWorkApi.getInstance().getService();
-        Disposable subscribe = internetApi.getRecords( id )
-                .subscribeOn( Schedulers.io() )
-                .observeOn( AndroidSchedulers.mainThread() )
-                .subscribe( listBackResultData -> {
-                    Log.d( TAG, "个人查询记录 ==》" + listBackResultData.toString() );
-                    if (mRecordCallback != null) {
-                        mRecordCallback.onLoadQueryData( listBackResultData );
+        Observable<BackResultData<List<Record>>> compose = internetApi.getRecords( id )
+                .compose( NetWorkApi.applySchedulers( new BaseObserver<BackResultData<List<Record>>>() {
+                    @Override
+                    public void onSuccess(BackResultData<List<Record>> listBackResultData) {
+                        Log.d( TAG, "个人查询记录 ==》" + listBackResultData.toString() );
+                        if (mRecordCallback != null) {
+                            mRecordCallback.onLoadQueryData( listBackResultData );
+                        }
                     }
-                }, throwable -> Log.d( TAG, Objects.requireNonNull( throwable.getMessage() ) ) );
+
+                    @Override
+                    public void onFailure(Throwable e) {
+                        Log.d( TAG, Objects.requireNonNull( e.getMessage() ) );
+                    }
+                } ) );
     }
 
     @Override

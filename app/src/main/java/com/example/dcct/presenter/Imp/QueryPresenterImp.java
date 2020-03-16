@@ -1,5 +1,6 @@
 package com.example.dcct.presenter.Imp;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 
 import com.example.dcct.base.BaseObserver;
@@ -14,6 +15,7 @@ import com.example.dcct.view.QueryCallback;
 import java.util.List;
 import java.util.Objects;
 
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -26,15 +28,21 @@ public class QueryPresenterImp implements QueryPresenter {
     @Override
     public void postQueryInformation(PostQueryEntity postQueryEntity) {
         InternetAPI internetApi = NetWorkApi.getInstance().getService();
-        Disposable subscribe = internetApi.submitQueryData( postQueryEntity )
-                .subscribeOn( Schedulers.io() )
-                .observeOn( AndroidSchedulers.mainThread() )
-                .subscribe( listBackResultData -> {
-                    Log.d( TAG, "查询结果 ==》" + listBackResultData.toString() );
-                    if (mQueryCallback != null) {
-                        mQueryCallback.onLoadQueryData( listBackResultData );
+        Observable<BackResultData<List<QueryResultEntity>>> compose = internetApi.submitQueryData( postQueryEntity )
+                .compose( NetWorkApi.applySchedulers( new BaseObserver<BackResultData<List<QueryResultEntity>>>() {
+                    @Override
+                    public void onSuccess(BackResultData<List<QueryResultEntity>> listBackResultData) {
+                        Log.d( TAG, "查询结果 ==》" + listBackResultData.toString() );
+                        if (mQueryCallback != null) {
+                            mQueryCallback.onLoadQueryData( listBackResultData );
+                        }
                     }
-                }, throwable -> Log.d( TAG, Objects.requireNonNull( throwable.getMessage() ) ) );
+
+                    @Override
+                    public void onFailure(Throwable e) {
+                        Log.d( TAG, Objects.requireNonNull( e.getMessage() ) );
+                    }
+                } ) );
     }
 
     @Override
