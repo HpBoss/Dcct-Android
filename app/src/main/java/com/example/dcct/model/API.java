@@ -1,14 +1,14 @@
 package com.example.dcct.model;
 
 import com.example.dcct.constants.Constant;
-import com.example.dcct.model.internet.model.BackResultData;
-import com.example.dcct.model.internet.model.CoverEntity;
-import com.example.dcct.model.internet.model.LoginUserEntity;
-import com.example.dcct.model.internet.model.PostQueryEntity;
-import com.example.dcct.model.internet.model.QueryResultEntity;
-import com.example.dcct.model.internet.model.Record;
-import com.example.dcct.model.internet.model.RegisterUserEntity;
-import com.example.dcct.model.internet.model.UserEntity;
+import com.example.dcct.model.internet.BackResultData;
+import com.example.dcct.model.internet.CoverEntity;
+import com.example.dcct.model.internet.LoginUserEntity;
+import com.example.dcct.model.internet.PostQueryEntity;
+import com.example.dcct.model.internet.QueryResultEntity;
+import com.example.dcct.model.internet.Record;
+import com.example.dcct.model.internet.RegisterUserEntity;
+import com.example.dcct.model.internet.UserEntity;
 
 import java.util.List;
 
