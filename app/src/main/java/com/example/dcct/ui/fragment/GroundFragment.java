@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.dcct.model.internet.model.CoverEntity;
+import com.example.dcct.model.internet.CoverEntity;
 import com.example.dcct.presenter.CoverPresenter;
 import com.example.dcct.presenter.Imp.CoverPresenterImp;
 import com.example.dcct.ui.adapter.CardInformationAdapter;

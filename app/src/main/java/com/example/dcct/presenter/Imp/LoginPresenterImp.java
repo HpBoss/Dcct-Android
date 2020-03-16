@@ -2,21 +2,19 @@ package com.example.dcct.presenter.Imp;
 
 import android.util.Log;
 
-import com.example.dcct.model.API;
-import com.example.dcct.model.internet.model.BackResultData;
-import com.example.dcct.model.internet.model.LoginUserEntity;
-import com.example.dcct.model.internet.model.UserEntity;
+import com.example.dcct.base.BaseObserver;
+import com.example.dcct.model.InternetAPI;
+import com.example.dcct.model.internet.BackResultData;
+import com.example.dcct.model.internet.LoginUserEntity;
+import com.example.dcct.model.internet.UserEntity;
 import com.example.dcct.presenter.LoginPresenter;
-import com.example.dcct.utils.RetrofitManger;
+import com.example.dcct.constants.NetWorkApi;
 import com.example.dcct.view.LoginCallback;
 
-import java.net.HttpURLConnection;
 import java.util.Objects;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 public class LoginPresenterImp implements LoginPresenter {
     private static final String TAG = "LoginPresenterImp";
@@ -24,26 +22,24 @@ public class LoginPresenterImp implements LoginPresenter {
 
     @Override
     public void postLoginData(LoginUserEntity loginUserEntity) {
-        Retrofit retrofit = new RetrofitManger().getRetrofit();
-        API API = retrofit.create(API.class);
-        Call<BackResultData<UserEntity>> task = API.submitLoginData( loginUserEntity );
-        task.enqueue(new Callback<BackResultData<UserEntity>>() {
-            @Override
-            public void onResponse(Call<BackResultData<UserEntity>> call, Response<BackResultData<UserEntity>> response) {
-                if (response.code() == HttpURLConnection.HTTP_OK) {
-                    BackResultData<UserEntity> backResultData = response.body();
-                    Log.d(TAG, "登录 ==》"+ backResultData.toString());
-                    if (mCallback != null) {
-                        mCallback.onLoadLoginData( backResultData );
+        InternetAPI internetAPI = NetWorkApi.getInstance().getService();
+        internetAPI.submitLoginData( loginUserEntity )
+                .subscribeOn( Schedulers.io() )
+                .observeOn( AndroidSchedulers.mainThread() )
+                .subscribe( new BaseObserver<BackResultData<UserEntity>>() {
+                    @Override
+                    public void onSuccess(BackResultData<UserEntity> userEntityBackResultData) {
+                        Log.d(TAG, "登录 ==》"+ userEntityBackResultData.toString());
+                        if (mCallback != null) {
+                            mCallback.onLoadLoginData( userEntityBackResultData );
+                        }
                     }
-                }
-            }
 
-            @Override
-            public void onFailure(Call<BackResultData<UserEntity>> call, Throwable t) {
-                Log.d(TAG, "登录 ==》"+ Objects.requireNonNull(t.getMessage()));
-            }
-        });
+                    @Override
+                    public void onFailure(Throwable e) {
+                        Log.d(TAG, "登录 ==》"+ Objects.requireNonNull(e.getMessage()));
+                    }
+                } );
     }
 
     @Override

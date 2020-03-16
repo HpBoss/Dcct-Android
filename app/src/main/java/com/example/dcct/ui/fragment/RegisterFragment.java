@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.dcct.model.internet.model.BackResultData;
-import com.example.dcct.model.internet.model.RegisterUserEntity;
+import com.example.dcct.model.internet.BackResultData;
+import com.example.dcct.model.internet.RegisterUserEntity;
 import com.example.dcct.presenter.Imp.RegisterPresenterImp;
 import com.example.dcct.presenter.RegisterPresenter;
 import com.example.dcct.utils.PasswordMatchingUtils;

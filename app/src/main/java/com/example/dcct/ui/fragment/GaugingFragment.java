@@ -1,11 +1,9 @@
 package com.example.dcct.ui.fragment;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +17,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.example.dcct.model.internet.model.BackResultData;
-import com.example.dcct.model.internet.model.PostQueryEntity;
-import com.example.dcct.model.internet.model.QueryResultEntity;
-import com.example.dcct.model.internet.model.ReportSerializable;
+import com.example.dcct.model.internet.BackResultData;
+import com.example.dcct.model.internet.PostQueryEntity;
+import com.example.dcct.model.internet.QueryResultEntity;
+import com.example.dcct.model.internet.ReportParcelable;
 import com.example.dcct.presenter.Imp.QueryPresenterImp;
 import com.example.dcct.presenter.QueryPresenter;
 import com.example.dcct.ui.adapter.GaugingPageAdapter;
@@ -34,6 +32,8 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class GaugingFragment extends Fragment implements QueryCallback {
 
@@ -77,7 +77,7 @@ public class GaugingFragment extends Fragment implements QueryCallback {
 
             if (mViewPager.getCurrentItem() == 0) {
                 if (!mMAndMFragment.doCheckCompleteAll()) {
-                    displayWarning();
+                    displayAlertDialog();
                 }else {
                     textData = mMAndMFragment.backTextData();
                     mQueryPresenter = new QueryPresenterImp();
@@ -88,7 +88,7 @@ public class GaugingFragment extends Fragment implements QueryCallback {
                 }
             }else {
                 if (!mMAndFoodFragment.doCheckCompleteAll()){
-                    displayWarning();
+                    displayAlertDialog();
                 }else {
                     textData = mMAndFoodFragment.backTextData();
                     mQueryPresenter = new QueryPresenterImp();
@@ -102,13 +102,12 @@ public class GaugingFragment extends Fragment implements QueryCallback {
     }
 
     private void jumpToReportActivity(List<QueryResultEntity> queryResultEntityList) {
-        ReportSerializable reportSerializable = new ReportSerializable(queryResultEntityList.get( 0 ).getDrugNameEntity().getDrugOne(),
-                queryResultEntityList.get( 1 ).getDrugNameEntity().getDrugOne(),
-                queryResultEntityList.get( 0 ).getDrugNameEntity().getDrugTwo(),queryResultEntityList.get( 1 ).getDrugNameEntity().getDrugTwo(),
+        ReportParcelable reportParcelable = new ReportParcelable(queryResultEntityList.get( 0 ).getDrugNameEntity().getDrugOne(),
+                queryResultEntityList.get( 0 ).getDrugNameEntity().getDrugTwo(),
                 queryResultEntityList.get( 0 ).getResult(),queryResultEntityList.get( 1 ).getResult(),
                 queryResultEntityList.get( 0 ).getScore(),queryResultEntityList.get( 1 ).getScore());
         Intent intent = new Intent(getActivity(), GaugingReportActivity.class);
-        intent.putExtra( "queryData",reportSerializable);
+        intent.putExtra( "queryData", reportParcelable );
         startActivity(intent);
         Objects.requireNonNull(getActivity()).overridePendingTransition(R.anim.translate_right_in, R.anim.translate_left_out);
     }
@@ -142,6 +141,7 @@ public class GaugingFragment extends Fragment implements QueryCallback {
     public void onLoadQueryData(BackResultData<List<QueryResultEntity>> backResultData) {
         if (backResultData.isState()) {
             List<QueryResultEntity> queryResultEntityList = backResultData.getData();
+            Toast.makeText( getActivity(),backResultData.getMsg(),Toast.LENGTH_LONG ).show();
             jumpToReportActivity( queryResultEntityList );
         }else {
             Toast.makeText( getActivity(),backResultData.getMsg(),Toast.LENGTH_LONG ).show();
@@ -153,11 +153,11 @@ public class GaugingFragment extends Fragment implements QueryCallback {
         void setTwoFragment(MAndMFragment fragment1,MAndFoodFragment fragment2);
     }
 
-    public void displayWarning(){
-        new AlertDialog.Builder(getActivity())
-                .setMessage("信息填写不完整！！！")
-                .setCancelable(false)
-                .setPositiveButton("OK", null)
+    private void displayAlertDialog(){
+        new SweetAlertDialog( Objects.requireNonNull( getActivity() ), SweetAlertDialog.WARNING_TYPE)
+                .setTitleText("查询信息未填写完整")
+                .setConfirmText("确定")
+                .setConfirmClickListener( SweetAlertDialog::dismissWithAnimation )
                 .show();
     }
 

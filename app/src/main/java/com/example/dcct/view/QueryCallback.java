@@ -1,7 +1,7 @@
 package com.example.dcct.view;
 
-import com.example.dcct.model.internet.model.BackResultData;
-import com.example.dcct.model.internet.model.QueryResultEntity;
+import com.example.dcct.model.internet.BackResultData;
+import com.example.dcct.model.internet.QueryResultEntity;
 
 import java.util.List;
 

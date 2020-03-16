@@ -1,48 +1,45 @@
 package com.example.dcct.presenter.Imp;
 
-import android.widget.Toast;
+import android.util.Log;
 
-import com.example.dcct.model.API;
-import com.example.dcct.model.internet.model.BackResultData;
-import com.example.dcct.model.internet.model.Record;
+import com.example.dcct.base.BaseObserver;
+import com.example.dcct.model.InternetAPI;
+import com.example.dcct.model.internet.BackResultData;
+import com.example.dcct.model.internet.Record;
 import com.example.dcct.presenter.RecordPresenter;
-import com.example.dcct.utils.RetrofitManger;
+import com.example.dcct.constants.NetWorkApi;
 import com.example.dcct.view.RecordCallback;
 
-import java.net.HttpURLConnection;
 import java.util.List;
+import java.util.Objects;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 public class RecordPresenterImp implements RecordPresenter {
     private RecordCallback mRecordCallback;
+    private static final String TAG = "RecordPresenterImp";
 
     @Override
     public void getAllQueryRecord(long id) {
-        Retrofit retrofit = RetrofitManger.getInstance().getRetrofit();
-        API api = retrofit.create( API.class );
-        Call<BackResultData<List<Record>>> task = api.getRecords( id );
-        task.enqueue( new Callback<BackResultData<List<Record>>>() {
-            @Override
-            public void onResponse(Call<BackResultData<List<Record>>> call, Response<BackResultData<List<Record>>> response) {
-                if (response.code() == HttpURLConnection.HTTP_OK) {
-                    BackResultData<List<Record>> backResultData = response.body();
-                    if (mRecordCallback != null) {
-                        mRecordCallback.onLoadQueryData( backResultData );
+        InternetAPI internetApi = NetWorkApi.getInstance().getService();
+        internetApi.getRecords( id )
+                .subscribeOn( Schedulers.io() )
+                .observeOn( AndroidSchedulers.mainThread() )
+                .subscribe( new BaseObserver<BackResultData<List<Record>>>() {
+                    @Override
+                    public void onSuccess(BackResultData<List<Record>> listBackResultData) {
+                        Log.d(TAG, "个人查询记录 ==》"+ listBackResultData.toString());
+                        if (mRecordCallback != null) {
+                            mRecordCallback.onLoadQueryData( listBackResultData );
+                        }
                     }
-                }
-            }
 
-            @Override
-            public void onFailure(Call<BackResultData<List<Record>>> call, Throwable t) {
-                if (mRecordCallback != null){
-                    mRecordCallback.onLoadError( t );
-                }
-            }
-        } );
+                    @Override
+                    public void onFailure(Throwable e) {
+                        Log.d(TAG, Objects.requireNonNull(e.getMessage()));
+                    }
+                } );
     }
 
     @Override

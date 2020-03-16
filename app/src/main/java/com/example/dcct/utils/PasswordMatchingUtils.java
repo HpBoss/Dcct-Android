@@ -5,6 +5,8 @@ import android.text.TextWatcher;
 
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.Objects;
+
 public class PasswordMatchingUtils implements TextWatcher {
     private TextInputLayout password;
     private TextInputLayout passwordAgain;
@@ -29,13 +31,13 @@ public class PasswordMatchingUtils implements TextWatcher {
     @Override
     public void afterTextChanged(Editable s) {
         if (order == 0) {
-            if (!passwordAgain.getEditText().getText().toString().equals(s.toString())) {
+            if (!Objects.requireNonNull( passwordAgain.getEditText() ).getText().toString().equals(s.toString())) {
                 passwordAgain.setError("两次输入密码不一致");
             }else {
                 passwordAgain.setErrorEnabled(false);
             }
         }else if (order == 1){
-            if (!password.getEditText().getText().toString().equals(s.toString())) {
+            if (!Objects.requireNonNull( password.getEditText() ).getText().toString().equals(s.toString())) {
                 passwordAgain.setError("两次输入密码不一致");
             }else {
                 passwordAgain.setErrorEnabled(false);

@@ -2,52 +2,45 @@ package com.example.dcct.presenter.Imp;
 
 import android.util.Log;
 
-import com.example.dcct.model.API;
-import com.example.dcct.model.internet.model.BackResultData;
-import com.example.dcct.model.internet.model.CoverEntity;
+import com.example.dcct.base.BaseObserver;
+import com.example.dcct.model.InternetAPI;
+import com.example.dcct.model.internet.BackResultData;
+import com.example.dcct.model.internet.CoverEntity;
 import com.example.dcct.presenter.CoverPresenter;
-import com.example.dcct.utils.RetrofitManger;
+import com.example.dcct.constants.NetWorkApi;
 import com.example.dcct.view.ImageUrlCallback;
 
-import java.net.HttpURLConnection;
 import java.util.List;
+import java.util.Objects;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 public class CoverPresenterImp implements CoverPresenter {
-
+    private static final String TAG = "CoverPresenterImp";
     private ImageUrlCallback imageUrlCallback;
 
     @Override
     public void requestImageUrl() {
-        Retrofit retrofit = RetrofitManger.getInstance().getRetrofit();
-        API api = retrofit.create( API.class );
-        Call<BackResultData<List<CoverEntity>>> task = api.getImageUrl();
-        task.enqueue( new Callback<BackResultData<List<CoverEntity>>>() {
-            @Override
-            public void onResponse(Call<BackResultData<List<CoverEntity>>> call, Response<BackResultData<List<CoverEntity>>> response) {
-                if (response.code() == HttpURLConnection.HTTP_OK) {
-                    BackResultData<List<CoverEntity>> backResultData = response.body();
-                    if (backResultData != null) {
-                        List<CoverEntity> coverEntities = backResultData.getData();
-//                        for (CoverEntity s : coverEntities) {
-//                            Log.d( "CoverPresenterImp",s.toString() );
-//                        }
+        InternetAPI internetApi = NetWorkApi.getInstance().getService();
+        internetApi.getImageUrl()
+                .subscribeOn( Schedulers.io() )
+                .observeOn( AndroidSchedulers.mainThread() )
+                .subscribe( new BaseObserver<BackResultData<List<CoverEntity>>>() {
+                    @Override
+                    public void onSuccess(BackResultData<List<CoverEntity>> listBackResultData) {
+                        Log.d(TAG, "获取图片url ==》"+ listBackResultData.toString());
                         if (imageUrlCallback != null) {
-                            imageUrlCallback.onLoadImageUrl( coverEntities );
+                            imageUrlCallback.onLoadImageUrl( listBackResultData.getData() );
                         }
                     }
-                }
-            }
 
-            @Override
-            public void onFailure(Call<BackResultData<List<CoverEntity>>> call, Throwable t) {
-                Log.d( "CoverPresenterImp" ,"广场封面图获取失败图片");
-            }
-        } );
+                    @Override
+                    public void onFailure(Throwable e) {
+                        Log.d(TAG, Objects.requireNonNull(e.getMessage()));
+                    }
+                } );
+
     }
 
     @Override
