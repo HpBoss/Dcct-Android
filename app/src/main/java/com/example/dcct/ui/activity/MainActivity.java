@@ -1,6 +1,5 @@
 package com.example.dcct.ui.activity;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -8,11 +7,10 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.dcct.databinding.ActivityMainBinding;
-import com.example.dcct.model.internet.model.BackResultData;
+import com.example.dcct.model.internet.BackResultData;
 import com.example.dcct.presenter.Imp.SignOutPresenterImp;
 import com.example.dcct.presenter.SignOutPresenter;
 import com.example.dcct.ui.fragment.MAndFoodFragment;
@@ -52,13 +50,7 @@ public class MainActivity extends BaseActivity implements GaugingFragment.transm
         setContentView(mBinding.getRoot());
         addStatusViewWithColor(this,getResources().getColor(R.color.colorPrimary));
         initView();
-//        if (savedInstanceState != null) {
-//            int selectId = savedInstanceState.getInt("LastSelectItemId");
-//            Log.d("displayId",String.valueOf(selectId));
-//            mNavController.navigate(selectId);
-//            mNavView.setSelectedItemId(selectId);
-//            mNavView.setSelected(true);
-//        }
+
     }
 
     /**
@@ -186,27 +178,27 @@ public class MainActivity extends BaseActivity implements GaugingFragment.transm
         mNavController.navigate(itemId);
         clickChangeTitle(title);
     }
-    public void displayInputDialog(final int itemId){
-        new AlertDialog.Builder(this)
-        .setMessage("是否要放弃本次检测？")
-        .setCancelable(false)
-        .setPositiveButton("Yes", (dialogInterface, i) -> {
-            mNavController.navigate(itemId);
-            switch (itemId){
-                case R.id.navigation_ground:
-                    clickChangeTitle(titleArray[0]);
-                    break;
-                case R.id.navigation_record:
-                    clickChangeTitle(titleArray[1]);
-                    break;
-            }
-        } )
-        .setNegativeButton("No", (dialog, which) -> {
-
-        } )
-        .show();
-
-    }
+//    public void displayInputDialog(final int itemId){
+//        new AlertDialog.Builder(this)
+//        .setMessage("是否要放弃本次检测？")
+//        .setCancelable(false)
+//        .setPositiveButton("Yes", (dialogInterface, i) -> {
+//            mNavController.navigate(itemId);
+//            switch (itemId){
+//                case R.id.navigation_ground:
+//                    clickChangeTitle(titleArray[0]);
+//                    break;
+//                case R.id.navigation_record:
+//                    clickChangeTitle(titleArray[1]);
+//                    break;
+//            }
+//        } )
+//        .setNegativeButton("No", (dialog, which) -> {
+//
+//        } )
+//        .show();
+//
+//    }
 
     public void displayAlertDialog(){
         new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)

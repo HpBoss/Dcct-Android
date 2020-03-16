@@ -14,11 +14,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.dcct.model.internet.model.BackResultData;
-import com.example.dcct.model.internet.model.PostQueryEntity;
-import com.example.dcct.model.internet.model.QueryResultEntity;
-import com.example.dcct.model.internet.model.Record;
-import com.example.dcct.model.internet.model.ReportSerializable;
+import com.example.dcct.model.internet.BackResultData;
+import com.example.dcct.model.internet.PostQueryEntity;
+import com.example.dcct.model.internet.QueryResultEntity;
+import com.example.dcct.model.internet.Record;
+import com.example.dcct.model.internet.ReportParcelable;
 import com.example.dcct.presenter.Imp.QueryPresenterImp;
 import com.example.dcct.presenter.Imp.RecordPresenterImp;
 import com.example.dcct.presenter.QueryPresenter;
@@ -87,13 +87,12 @@ public class RecordFragment extends Fragment implements RecordCallback {
     private QueryCallback mQueryCallback = backResultData -> {
         if (backResultData.isState()) {
             List<QueryResultEntity> queryResultEntityList = backResultData.getData();
-            ReportSerializable reportSerializable = new ReportSerializable(queryResultEntityList.get( 0 ).getDrugNameEntity().getDrugOne(),
-                    queryResultEntityList.get( 1 ).getDrugNameEntity().getDrugOne(),
-                    queryResultEntityList.get( 0 ).getDrugNameEntity().getDrugTwo(),queryResultEntityList.get( 1 ).getDrugNameEntity().getDrugTwo(),
+            ReportParcelable reportParcelable = new ReportParcelable(queryResultEntityList.get( 0 ).getDrugNameEntity().getDrugOne(),
+                    queryResultEntityList.get( 0 ).getDrugNameEntity().getDrugTwo(),
                     queryResultEntityList.get( 0 ).getResult(),queryResultEntityList.get( 1 ).getResult(),
                     queryResultEntityList.get( 0 ).getScore(),queryResultEntityList.get( 1 ).getScore());
             Intent intent = new Intent(getActivity(), GaugingReportActivity.class);
-            intent.putExtra( "queryData", reportSerializable );
+            intent.putExtra( "queryData", reportParcelable );
             startActivity(intent);
             Objects.requireNonNull(getActivity()).overridePendingTransition(R.anim.translate_right_in, R.anim.translate_left_out);
         }else {

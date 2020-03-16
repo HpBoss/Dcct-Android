@@ -1,16 +1,13 @@
 package com.example.dcct.ui.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.widget.TextView;
 
 import com.example.dcct.R;
 import com.example.dcct.databinding.ActivityGaugingReportBinding;
-import com.example.dcct.model.internet.model.ReportSerializable;
+import com.example.dcct.model.internet.ReportParcelable;
 
 public class GaugingReportActivity extends AppCompatActivity {
 
@@ -29,18 +26,18 @@ public class GaugingReportActivity extends AppCompatActivity {
     }
 
     private void getGaugingReport() {
-        ReportSerializable reportSerializable = (ReportSerializable) getIntent().getSerializableExtra( "queryData" );
-        if (reportSerializable != null) {
-            mBinding.drug1.setText( reportSerializable.getDrugOne1() );
-            mBinding.drug2.setText( reportSerializable.getDrugTwo1() );
-            mBinding.firstDrug1.setText( reportSerializable.getDrugOne1() );
-            mBinding.firstDrug2.setText( reportSerializable.getDrugTwo1() );
-            mBinding.secondDrug1.setText( reportSerializable.getDrugOne2() );
-            mBinding.secondDrug2.setText( reportSerializable.getDrugTwo2() );
-            mBinding.firstResult.setText( reportSerializable.getResult1() );
-            mBinding.secondResult.setText( reportSerializable.getResult2() );
-            mBinding.firstScore.setText( String.valueOf( reportSerializable.getScore1() ) );
-            mBinding.secondScore.setText( String.valueOf( reportSerializable.getScore2() ) );
+        ReportParcelable reportParcelable = getIntent().getParcelableExtra( "queryData"  );
+        if (reportParcelable != null) {
+            mBinding.drug1.setText( reportParcelable.getDrugOne1() );
+            mBinding.drug2.setText( reportParcelable.getDrugTwo1() );
+            mBinding.firstDrug1.setText( reportParcelable.getDrugOne1() );
+            mBinding.firstDrug2.setText( reportParcelable.getDrugTwo1() );
+            mBinding.secondDrug1.setText( reportParcelable.getDrugTwo1() );
+            mBinding.secondDrug2.setText( reportParcelable.getDrugOne1() );
+            mBinding.firstResult.setText( reportParcelable.getResult1() );
+            mBinding.secondResult.setText( reportParcelable.getResult2() );
+            mBinding.firstScore.setText( String.valueOf( reportParcelable.getScore1() ) );
+            mBinding.secondScore.setText( String.valueOf( reportParcelable.getScore2() ) );
         }
     }
 

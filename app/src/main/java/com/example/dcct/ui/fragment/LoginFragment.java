@@ -16,9 +16,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.dcct.R;
-import com.example.dcct.model.internet.model.BackResultData;
-import com.example.dcct.model.internet.model.LoginUserEntity;
-import com.example.dcct.model.internet.model.UserEntity;
+import com.example.dcct.model.internet.BackResultData;
+import com.example.dcct.model.internet.LoginUserEntity;
+import com.example.dcct.model.internet.UserEntity;
 import com.example.dcct.presenter.Imp.LoginPresenterImp;
 import com.example.dcct.presenter.LoginPresenter;
 import com.example.dcct.view.LoginCallback;

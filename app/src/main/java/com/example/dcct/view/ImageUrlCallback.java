@@ -1,6 +1,6 @@
 package com.example.dcct.view;
 
-import com.example.dcct.model.internet.model.CoverEntity;
+import com.example.dcct.model.internet.CoverEntity;
 
 import java.util.List;
 

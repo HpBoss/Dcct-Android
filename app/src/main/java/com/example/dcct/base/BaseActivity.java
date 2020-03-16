@@ -203,8 +203,7 @@ public class BaseActivity extends AppCompatActivity {
         }
 
         final float targetDensity = (float) appDisplayMetrics.widthPixels / 450;
-        System.out.println(appDisplayMetrics.widthPixels);
-        System.out.println(targetDensity);
+
         final float targetScaledDensity = targetDensity * (sNoncompatScaledDensity / sNoncompatDensity);
         final int targetDensityDpi = (int) (160 * targetDensity);
 
