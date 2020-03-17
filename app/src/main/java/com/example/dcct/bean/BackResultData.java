@@ -1,4 +1,4 @@
-package com.example.dcct.model.internet;
+package com.example.dcct.bean;
 
 public class BackResultData<T> {
 

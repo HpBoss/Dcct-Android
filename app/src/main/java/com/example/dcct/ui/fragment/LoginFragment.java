@@ -16,10 +16,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.dcct.R;
-import com.example.dcct.model.internet.BackResultData;
-import com.example.dcct.model.internet.LoginUserEntity;
-import com.example.dcct.model.internet.UserEntity;
-import com.example.dcct.presenter.Imp.LoginPresenterImp;
+import com.example.dcct.bean.BackResultData;
+import com.example.dcct.bean.LoginUserEntity;
+import com.example.dcct.bean.UserEntity;
+import com.example.dcct.model.Impl.LoginModelImp;
+import com.example.dcct.model.LoginModel;
 import com.example.dcct.presenter.LoginPresenter;
 import com.example.dcct.view.LoginCallback;
 import com.google.android.material.textfield.TextInputLayout;
@@ -35,7 +36,6 @@ public class LoginFragment extends Fragment implements LoginCallback {
     private String email;
     private String password;
     private ImageView login;
-    private TextView contentView;
     private InformationDetermine mInformationDetermine;
     private LoginPresenter mLoginPresenter;
 
@@ -56,7 +56,7 @@ public class LoginFragment extends Fragment implements LoginCallback {
         textInputLayoutPwd = view.findViewById(R.id.textInputLayoutPwd);
         textInputLayoutEmail = view.findViewById(R.id.textInputLayoutEmail);
         login = view.findViewById(R.id.iv_login);
-        contentView = view.findViewById( R.id.snackBarLogin );
+        TextView contentView = view.findViewById( R.id.snackBarLogin );
 
         if (textInputLayoutEmail.getEditText() != null) {
             textInputLayoutEmail.getEditText().setOnFocusChangeListener( (v, hasFocus) -> {
@@ -87,13 +87,12 @@ public class LoginFragment extends Fragment implements LoginCallback {
                     Toast.makeText( getActivity(),"邮箱、密码均为空！" ,Toast.LENGTH_SHORT).show();
                 }else{
                     //向服务器提交数据
-                    mLoginPresenter = new LoginPresenterImp();
-                    mLoginPresenter.registerCallBack( this );
                     LoginUserEntity loginUserEntity = new LoginUserEntity(email,password);
-                    mLoginPresenter.postLoginData( loginUserEntity );
+                    mLoginPresenter = new LoginPresenter();
+                    mLoginPresenter.attachView( this );
+                    mLoginPresenter.fetchUserEntity( loginUserEntity );
                     //在onLoadLoginData方法中接受数据
                 }
-
             }
         } );
     }
@@ -108,42 +107,26 @@ public class LoginFragment extends Fragment implements LoginCallback {
                 preferences.edit().putBoolean("LOGIN_SUCCESS", true).apply();
             }
             UserEntity dataBean = backData.getData();
-////            UserDatabase userDatabase = UserDatabase.getInstance( getActivity() );
-////            UserDao userDao = userDatabase.getUserDao();
-////            UserEntity userEntity = new UserEntity(dataBean.getUid(),dataBean.getNickname(),dataBean.getEmail());
-////            /*userDao.insertUser( userEntity );*/
-////            new InsertAsyncTask(userDao).execute(userEntity);
             SharedPreferences preferences = getActivity().getSharedPreferences( "SHARE_APP_DATA",Context.MODE_PRIVATE );
             preferences.edit().putString( "nickname", dataBean.getNickname())
-            .putLong( "uid",dataBean.getUid() )
-            .apply();
+                        .putLong( "uid",dataBean.getUid() )
+                        .apply();
             //向父活动发送登录成功的通知
             mInformationDetermine.loginSuccess();
         }else {
             Toast.makeText( getActivity(),backData.getMsg(),Toast.LENGTH_SHORT ).show();
-//            SnackBarUtil.ShortSnackbar(contentView,backData.getMsg(), SnackBarUtil.Alert).show();
         }
     }
-//    static class InsertAsyncTask extends AsyncTask<UserEntity,Void,Void>{
-//        private UserDao mUserDao;
-//
-//        public InsertAsyncTask(UserDao userDao) {
-//            mUserDao = userDao;
-//        }
-//
-//        @Override
-//        protected Void doInBackground(UserEntity... userEntities) {
-//            mUserDao.insertUser( userEntities );
-//            return null;
-//        }
-//    }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (mLoginPresenter != null) {
-            mLoginPresenter.unregisterCallBack( this );
-        }
+        mLoginPresenter.detachView();
+    }
+
+    @Override
+    public void showErrorMsg(String msg) {
+        Toast.makeText( getActivity(),msg,Toast.LENGTH_SHORT ).show();
     }
 
     public interface InformationDetermine {

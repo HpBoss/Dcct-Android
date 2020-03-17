@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dcct.R;
-import com.example.dcct.model.internet.Record;
+import com.example.dcct.bean.Record;
 
 import java.util.List;
 

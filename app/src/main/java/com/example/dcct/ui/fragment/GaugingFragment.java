@@ -17,12 +17,14 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.example.dcct.model.internet.BackResultData;
-import com.example.dcct.model.internet.PostQueryEntity;
-import com.example.dcct.model.internet.QueryResultEntity;
-import com.example.dcct.model.internet.ReportParcelable;
-import com.example.dcct.presenter.Imp.QueryPresenterImp;
+import com.example.dcct.bean.BackResultData;
+import com.example.dcct.bean.PostQueryEntity;
+import com.example.dcct.bean.QueryResultEntity;
+import com.example.dcct.bean.ReportParcelable;
+import com.example.dcct.model.Impl.QueryModelImp;
+import com.example.dcct.model.QueryModel;
 import com.example.dcct.presenter.QueryPresenter;
+import com.example.dcct.ui.activity.MainActivity;
 import com.example.dcct.ui.adapter.GaugingPageAdapter;
 import com.example.dcct.ui.activity.GaugingReportActivity;
 import com.example.dcct.R;
@@ -48,53 +50,51 @@ public class GaugingFragment extends Fragment implements QueryCallback {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        View root = inflater.inflate(R.layout.fragment_gauging, container, false);
+        View root = inflater.inflate( R.layout.fragment_gauging, container, false );
         addFragment();
-        initView(root);
-        mTransmitFragment.setTwoFragment(mMAndMFragment,mMAndFoodFragment);
+        initView( root );
+        mTransmitFragment.setTwoFragment( mMAndMFragment, mMAndFoodFragment );
         return root;
     }
 
     private void addFragment() {
         mMAndMFragment = new MAndMFragment();
         mMAndFoodFragment = new MAndFoodFragment();
-        mFragmentList.add(mMAndMFragment);
-        mFragmentList.add(mMAndFoodFragment);
+        mFragmentList.add( mMAndMFragment );
+        mFragmentList.add( mMAndFoodFragment );
     }
 
     private void initView(View root) {
-        TabLayout tabLayout = Objects.requireNonNull(getActivity()).findViewById(R.id.tabSegment);
-        mViewPager = root.findViewById(R.id.viewPager);
-        tabLayout.setupWithViewPager(mViewPager);
-        mViewPager.setCurrentItem(0);
-        final GaugingPageAdapter gaugingPageAdapter = new GaugingPageAdapter(getChildFragmentManager(),FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT,mFragmentList);
-        mViewPager.setAdapter(gaugingPageAdapter);
-        mGaugingButton = root.findViewById(R.id.gaugingButton);
+        TabLayout tabLayout = Objects.requireNonNull( getActivity() ).findViewById( R.id.tabSegment );
+        mViewPager = root.findViewById( R.id.viewPager );
+        tabLayout.setupWithViewPager( mViewPager );
+        mViewPager.setCurrentItem( 0 );
+        final GaugingPageAdapter gaugingPageAdapter = new GaugingPageAdapter( getChildFragmentManager(), FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, mFragmentList );
+        mViewPager.setAdapter( gaugingPageAdapter );
+        mGaugingButton = root.findViewById( R.id.gaugingButton );
         mGaugingButton.setOnClickListener( v -> {
             List<String> textData;
-            SharedPreferences preferences = getActivity().getSharedPreferences( "SHARE_APP_DATA",Context.MODE_PRIVATE );
+            SharedPreferences preferences = getActivity().getSharedPreferences( "SHARE_APP_DATA", Context.MODE_PRIVATE );
             long uid = preferences.getLong( "uid", 1 );
+            mQueryPresenter = new QueryPresenter();
+            mQueryPresenter.attachView( this );
 
             if (mViewPager.getCurrentItem() == 0) {
                 if (!mMAndMFragment.doCheckCompleteAll()) {
                     displayAlertDialog();
-                }else {
+                } else {
                     textData = mMAndMFragment.backTextData();
-                    mQueryPresenter = new QueryPresenterImp();
-                    mQueryPresenter.registerCallBack( this );
-                    PostQueryEntity postQueryEntity = new PostQueryEntity(textData.get( 0 ),textData.get( 1 ),uid);
-                    mQueryPresenter.postQueryInformation( postQueryEntity );
+                    PostQueryEntity postQueryEntity = new PostQueryEntity( textData.get( 0 ), textData.get( 1 ), uid );
+                    mQueryPresenter.fetchQueryResult( postQueryEntity );
                     mMAndMFragment.clearEditeContent();
                 }
-            }else {
-                if (!mMAndFoodFragment.doCheckCompleteAll()){
+            } else {
+                if (!mMAndFoodFragment.doCheckCompleteAll()) {
                     displayAlertDialog();
-                }else {
+                } else {
                     textData = mMAndFoodFragment.backTextData();
-                    mQueryPresenter = new QueryPresenterImp();
-                    mQueryPresenter.registerCallBack( this );
-                    PostQueryEntity postQueryEntity = new PostQueryEntity(textData.get( 0 ),textData.get( 1 ),uid);
-                    mQueryPresenter.postQueryInformation( postQueryEntity );
+                    PostQueryEntity postQueryEntity = new PostQueryEntity( textData.get( 0 ), textData.get( 1 ), uid );
+                    mQueryPresenter.fetchQueryResult( postQueryEntity );
                     mMAndFoodFragment.clearEditeContent();
                 }
             }
@@ -102,32 +102,32 @@ public class GaugingFragment extends Fragment implements QueryCallback {
     }
 
     private void jumpToReportActivity(List<QueryResultEntity> queryResultEntityList) {
-        ReportParcelable reportParcelable = new ReportParcelable(queryResultEntityList.get( 0 ).getDrugNameEntity().getDrugOne(),
+        ReportParcelable reportParcelable = new ReportParcelable( queryResultEntityList.get( 0 ).getDrugNameEntity().getDrugOne(),
                 queryResultEntityList.get( 0 ).getDrugNameEntity().getDrugTwo(),
-                queryResultEntityList.get( 0 ).getResult(),queryResultEntityList.get( 1 ).getResult(),
-                queryResultEntityList.get( 0 ).getScore(),queryResultEntityList.get( 1 ).getScore());
-        Intent intent = new Intent(getActivity(), GaugingReportActivity.class);
+                queryResultEntityList.get( 0 ).getResult(), queryResultEntityList.get( 1 ).getResult(),
+                queryResultEntityList.get( 0 ).getScore(), queryResultEntityList.get( 1 ).getScore() );
+        Intent intent = new Intent( getActivity(), GaugingReportActivity.class );
         intent.putExtra( "queryData", reportParcelable );
-        startActivity(intent);
-        Objects.requireNonNull(getActivity()).overridePendingTransition(R.anim.translate_right_in, R.anim.translate_left_out);
+        startActivity( intent );
+        Objects.requireNonNull( getActivity() ).overridePendingTransition( R.anim.translate_right_in, R.anim.translate_left_out );
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         if (mQueryPresenter != null) {
-            mQueryPresenter.unregisterCallBack( this );
+            mQueryPresenter.detachView();
         }
     }
 
     @Override
     public void onAttach(Context context) {
-        super.onAttach(context);
+        super.onAttach( context );
         if (context instanceof GaugingFragment.transmitFragment) {
             mTransmitFragment = (GaugingFragment.transmitFragment) context;
         } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement transmitFragment");
+            throw new RuntimeException( context.toString()
+                    + " must implement transmitFragment" );
         }
     }
 
@@ -141,32 +141,37 @@ public class GaugingFragment extends Fragment implements QueryCallback {
     public void onLoadQueryData(BackResultData<List<QueryResultEntity>> backResultData) {
         if (backResultData.isState()) {
             List<QueryResultEntity> queryResultEntityList = backResultData.getData();
-            Toast.makeText( getActivity(),backResultData.getMsg(),Toast.LENGTH_LONG ).show();
+            Toast.makeText( getActivity(), backResultData.getMsg(), Toast.LENGTH_LONG ).show();
             jumpToReportActivity( queryResultEntityList );
-        }else {
-            Toast.makeText( getActivity(),backResultData.getMsg(),Toast.LENGTH_LONG ).show();
+        } else {
+            Toast.makeText( getActivity(), backResultData.getMsg(), Toast.LENGTH_LONG ).show();
         }
 
     }
 
-    public interface transmitFragment{
-        void setTwoFragment(MAndMFragment fragment1,MAndFoodFragment fragment2);
+    @Override
+    public void showErrorMsg(String msg) {
+        Toast.makeText( getActivity(),msg,Toast.LENGTH_SHORT ).show();
     }
 
-    private void displayAlertDialog(){
-        new SweetAlertDialog( Objects.requireNonNull( getActivity() ), SweetAlertDialog.WARNING_TYPE)
-                .setTitleText("查询信息未填写完整")
-                .setConfirmText("确定")
+    public interface transmitFragment {
+        void setTwoFragment(MAndMFragment fragment1, MAndFoodFragment fragment2);
+    }
+
+    private void displayAlertDialog() {
+        new SweetAlertDialog( Objects.requireNonNull( getActivity() ), SweetAlertDialog.WARNING_TYPE )
+                .setTitleText( "查询信息未填写完整" )
+                .setConfirmText( "确定" )
                 .setConfirmClickListener( SweetAlertDialog::dismissWithAnimation )
                 .show();
     }
 
-    public void rotateAnimation(){
-        Animation animation = AnimationUtils.loadAnimation(getActivity(),R.anim.rotate_360_degress);
+    public void rotateAnimation() {
+        Animation animation = AnimationUtils.loadAnimation( getActivity(), R.anim.rotate_360_degress );
         /*LinearInterpolator lin = new LinearInterpolator();
         animation.setInterpolator(lin);设置运行速度*/
         /*LinearInterpolator为匀速效果，AccelerateInterpolator为加速效果、DecelerateInterpolator为减速效果*/
-        mGaugingButton.startAnimation(animation);
+        mGaugingButton.startAnimation( animation );
         /*mGaugingButton.clearAnimation();关闭动画*/
     }
 }

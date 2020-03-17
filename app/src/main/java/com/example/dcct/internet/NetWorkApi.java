@@ -1,7 +1,10 @@
-package com.example.dcct.constants;
+package com.example.dcct.internet;
 
-import com.example.dcct.model.InternetAPI;
-
+import io.reactivex.Observable;
+import io.reactivex.ObservableTransformer;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -28,7 +31,7 @@ public class NetWorkApi {//双重检查模式
         return ourInstance;
     }
 
-    public NetWorkApi() {
+    private NetWorkApi() {
         mRetrofit = new Retrofit.Builder()
                 .baseUrl( Constant.BASE_URL )
                 .addConverterFactory( GsonConverterFactory.create() )
@@ -38,5 +41,14 @@ public class NetWorkApi {//双重检查模式
 
     public InternetAPI getService() {
         return mRetrofit.create( InternetAPI.class );
+    }
+
+    public static <T>ObservableTransformer<T,T> applySchedulers(final Observer<T> observer) {
+        return upstream -> {
+            Observable<T> observable = upstream.subscribeOn( Schedulers.io() )
+                    .observeOn( AndroidSchedulers.mainThread() );
+            observable.subscribe( observer );
+            return observable;
+        };
     }
 }

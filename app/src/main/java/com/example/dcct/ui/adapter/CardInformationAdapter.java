@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.dcct.R;
-import com.example.dcct.model.internet.CoverEntity;
+import com.example.dcct.bean.CoverEntity;
 
 import java.util.List;
 

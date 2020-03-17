@@ -1,10 +1,9 @@
 package com.example.dcct.view;
 
-import com.example.dcct.model.internet.BackResultData;
-import com.example.dcct.model.internet.UserEntity;
+import com.example.dcct.base.BaseCallback;
+import com.example.dcct.bean.BackResultData;
+import com.example.dcct.bean.UserEntity;
 
-public interface LoginCallback {
-
+public interface LoginCallback extends BaseCallback {
     void onLoadLoginData(BackResultData<UserEntity> backData);
-
 }

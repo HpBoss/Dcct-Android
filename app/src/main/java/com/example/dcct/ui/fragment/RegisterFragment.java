@@ -10,10 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.example.dcct.model.internet.BackResultData;
-import com.example.dcct.model.internet.RegisterUserEntity;
-import com.example.dcct.presenter.Imp.RegisterPresenterImp;
+import com.example.dcct.bean.BackResultData;
+import com.example.dcct.bean.RegisterUserEntity;
+import com.example.dcct.model.Impl.RegisterModelImp;
+import com.example.dcct.model.RegisterModel;
 import com.example.dcct.presenter.RegisterPresenter;
 import com.example.dcct.utils.PasswordMatchingUtils;
 import com.example.dcct.R;
@@ -81,10 +83,10 @@ public class RegisterFragment extends Fragment implements RegisterCallback {
                     SnackBarUtil.ShortSnackbar(contentView, "信息输入不完整！！！", SnackBarUtil.Warning).show();
                 } else {
                     //向服务器提交数据
-                    mRegisterPresenter = new RegisterPresenterImp();
-                    mRegisterPresenter.registerCallBack(this);
                     RegisterUserEntity registerUserEntity = new RegisterUserEntity(username, email, password);
-                    mRegisterPresenter.postRegisterInfor( registerUserEntity );
+                    mRegisterPresenter = new RegisterPresenter();
+                    mRegisterPresenter.attachView( this );
+                    mRegisterPresenter.fetchRegisterResult( registerUserEntity );
                     //在onLoadRegisterData方法中接受服务器返回的数据
                 }
             });
@@ -104,9 +106,7 @@ public class RegisterFragment extends Fragment implements RegisterCallback {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (mRegisterPresenter != null) {
-            mRegisterPresenter.unregisterCallBack(this);
-        }
+        mRegisterPresenter.detachView();
     }
 
     @Override
@@ -124,6 +124,11 @@ public class RegisterFragment extends Fragment implements RegisterCallback {
     public void onDetach() {
         super.onDetach();
         mIsRegisterListener = null;
+    }
+
+    @Override
+    public void showErrorMsg(String msg) {
+        Toast.makeText( getActivity(),msg,Toast.LENGTH_SHORT ).show();
     }
 
     public interface isRegisterListener{

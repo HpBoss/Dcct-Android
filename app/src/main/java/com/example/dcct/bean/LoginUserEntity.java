@@ -1,31 +1,20 @@
-package com.example.dcct.model.internet;
+package com.example.dcct.bean;
 
-public class RegisterUserEntity {
-    private String nickname;
+public class LoginUserEntity {
     private String email;
     private String password;
 
     @Override
     public String toString() {
-        return "RegisterUserEntity{" +
-                "nickname='" + nickname + '\'' +
-                ", email='" + email + '\'' +
+        return "LoginUserEntity{" +
+                "email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 '}';
     }
 
-    public RegisterUserEntity(String nickname, String email, String password) {
-        this.nickname = nickname;
+    public LoginUserEntity(String email, String password) {
         this.email = email;
         this.password = password;
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
     }
 
     public String getEmail() {
