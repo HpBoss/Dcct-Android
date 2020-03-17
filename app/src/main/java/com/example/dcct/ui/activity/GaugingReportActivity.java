@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 
 import com.example.dcct.R;
 import com.example.dcct.databinding.ActivityGaugingReportBinding;
-import com.example.dcct.model.internet.ReportParcelable;
+import com.example.dcct.bean.ReportParcelable;
 
 public class GaugingReportActivity extends AppCompatActivity {
 

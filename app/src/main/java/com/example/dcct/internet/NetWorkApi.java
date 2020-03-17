@@ -1,9 +1,6 @@
-package com.example.dcct.constants;
-
-import com.example.dcct.model.InternetAPI;
+package com.example.dcct.internet;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;

@@ -31,6 +31,14 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+    }
+
+    /**
+     * 设置沉浸式界面
+     * 根据Android版本的不同，作出相应设置
+     */
+    public void setImmersive(){
         if (Build.VERSION.SDK_INT >= 21) {
             View decorView = getWindow().getDecorView();
             int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -38,12 +46,7 @@ public class BaseActivity extends AppCompatActivity {
             decorView.setSystemUiVisibility(option);
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
-//        ActionBar actionbar = getSupportActionBar();
-//        if(actionbar != null){
-//            actionbar.hide();
-//        }
     }
-
     /**
      * 活动页面从小到大的渐变动画
      */
