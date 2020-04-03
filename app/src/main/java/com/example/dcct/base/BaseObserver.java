@@ -4,6 +4,7 @@ import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 
 public abstract class BaseObserver<T> implements Observer<T> {
+
     @Override
     public void onSubscribe(Disposable d) {
 
@@ -18,7 +19,6 @@ public abstract class BaseObserver<T> implements Observer<T> {
     public void onError(Throwable e) {
         onFailure(e);
     }
-
 
     @Override
     public void onComplete() {

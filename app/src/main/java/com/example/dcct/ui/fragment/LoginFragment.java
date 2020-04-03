@@ -47,23 +47,23 @@ public class LoginFragment extends Fragment implements LoginCallback {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_login, container, false);
-        initView(view);
+        View view = inflater.inflate( R.layout.fragment_login, container, false );
+        initView( view );
         return view;
     }
 
     private void initView(View view) {
-        textInputLayoutPwd = view.findViewById(R.id.textInputLayoutPwd);
-        textInputLayoutEmail = view.findViewById(R.id.textInputLayoutEmail);
-        login = view.findViewById(R.id.iv_login);
+        textInputLayoutPwd = view.findViewById( R.id.textInputLayoutPwd );
+        textInputLayoutEmail = view.findViewById( R.id.textInputLayoutEmail );
+        login = view.findViewById( R.id.iv_login );
         TextView contentView = view.findViewById( R.id.snackBarLogin );
 
         if (textInputLayoutEmail.getEditText() != null) {
             textInputLayoutEmail.getEditText().setOnFocusChangeListener( (v, hasFocus) -> {
                 if (!hasFocus) {
-                    if (!formatDecision( textInputLayoutEmail.getEditText().getText().toString() )){
+                    if (!formatDecision( textInputLayoutEmail.getEditText().getText().toString() )) {
                         textInputLayoutEmail.setError( "邮箱格式错误" );
-                    }else {
+                    } else {
                         textInputLayoutEmail.setErrorEnabled( false );
                     }
                 }
@@ -73,21 +73,21 @@ public class LoginFragment extends Fragment implements LoginCallback {
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+        super.onActivityCreated( savedInstanceState );
         login.setOnClickListener( v -> {
             if (textInputLayoutEmail.getEditText() != null && textInputLayoutPwd.getEditText() != null) {
                 email = textInputLayoutEmail.getEditText().getText().toString();
                 password = textInputLayoutPwd.getEditText().getText().toString();
 
-                if (email.contentEquals( "" ) && !password.contentEquals( "" )){
-                    Toast.makeText( getActivity(),"邮箱号为空" ,Toast.LENGTH_SHORT).show();
-                }else if (!email.contentEquals( "" ) && password.contentEquals( "" )){
-                    Toast.makeText( getActivity(),"密码为空" ,Toast.LENGTH_SHORT).show();
-                }else if (email.contentEquals( "" ) && password.contentEquals( "" )){
-                    Toast.makeText( getActivity(),"邮箱、密码均为空！" ,Toast.LENGTH_SHORT).show();
-                }else{
+                if (email.contentEquals( "" ) && !password.contentEquals( "" )) {
+                    Toast.makeText( getActivity(), "邮箱号为空", Toast.LENGTH_SHORT ).show();
+                } else if (!email.contentEquals( "" ) && password.contentEquals( "" )) {
+                    Toast.makeText( getActivity(), "密码为空", Toast.LENGTH_SHORT ).show();
+                } else if (email.contentEquals( "" ) && password.contentEquals( "" )) {
+                    Toast.makeText( getActivity(), "邮箱、密码均为空！", Toast.LENGTH_SHORT ).show();
+                } else {
                     //向服务器提交数据
-                    LoginUserEntity loginUserEntity = new LoginUserEntity(email,password);
+                    LoginUserEntity loginUserEntity = new LoginUserEntity( email, password );
                     mLoginPresenter = new LoginPresenter();
                     mLoginPresenter.attachView( this );
                     mLoginPresenter.fetchUserEntity( loginUserEntity );
@@ -101,32 +101,34 @@ public class LoginFragment extends Fragment implements LoginCallback {
     public void onLoadLoginData(BackResultData<UserEntity> backData) {
         if (backData.isState()) {
             if (getActivity() != null) {
-                Toast.makeText( getActivity(),backData.getMsg(),Toast.LENGTH_SHORT ).show();
+                Toast.makeText( getActivity(), backData.getMsg(), Toast.LENGTH_SHORT ).show();
                 //将登录成功的信息使用SharedPreferences存储
                 SharedPreferences preferences = getActivity().getSharedPreferences( "SHARE_APP_LOGIN", Context.MODE_PRIVATE );
-                preferences.edit().putBoolean("LOGIN_SUCCESS", true).apply();
+                preferences.edit().putBoolean( "LOGIN_SUCCESS", true ).apply();
             }
             UserEntity dataBean = backData.getData();
-            SharedPreferences preferences = getActivity().getSharedPreferences( "SHARE_APP_DATA",Context.MODE_PRIVATE );
-            preferences.edit().putString( "nickname", dataBean.getNickname())
-                        .putLong( "uid",dataBean.getUid() )
-                        .apply();
+            SharedPreferences preferences = getActivity().getSharedPreferences( "SHARE_APP_DATA", Context.MODE_PRIVATE );
+            preferences.edit().putString( "nickname", dataBean.getNickname() )
+                    .putLong( "uid", dataBean.getUid() )
+                    .apply();
             //向父活动发送登录成功的通知
             mInformationDetermine.loginSuccess();
-        }else {
-            Toast.makeText( getActivity(),backData.getMsg(),Toast.LENGTH_SHORT ).show();
+        } else {
+            Toast.makeText( getActivity(), backData.getMsg(), Toast.LENGTH_SHORT ).show();
         }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mLoginPresenter.detachView();
+        if (mLoginPresenter != null) {
+            mLoginPresenter.detachView();
+        }
     }
 
     @Override
     public void showErrorMsg(String msg) {
-        Toast.makeText( getActivity(),msg,Toast.LENGTH_SHORT ).show();
+        Toast.makeText( getActivity(), msg, Toast.LENGTH_SHORT ).show();
     }
 
     public interface InformationDetermine {
@@ -142,12 +144,12 @@ public class LoginFragment extends Fragment implements LoginCallback {
 
     @Override
     public void onAttach(Context context) {
-        super.onAttach(context);
+        super.onAttach( context );
         if (context instanceof InformationDetermine) {
             mInformationDetermine = (InformationDetermine) context;
         } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement InformationDetermine");
+            throw new RuntimeException( context.toString()
+                    + " must implement InformationDetermine" );
         }
     }
 
@@ -159,8 +161,8 @@ public class LoginFragment extends Fragment implements LoginCallback {
 
     private boolean formatDecision(String email) {
         String regEx1 = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
-        Pattern p = Pattern.compile(regEx1);
-        Matcher m = p.matcher(email);
+        Pattern p = Pattern.compile( regEx1 );
+        Matcher m = p.matcher( email );
         return m.matches();
     }
 }
