@@ -1,10 +1,15 @@
 package com.example.dcct.internet;
 
+import java.util.concurrent.TimeUnit;
+
 import io.reactivex.Observable;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -32,8 +37,25 @@ public class NetWorkApi {//双重检查模式
     }
 
     private NetWorkApi() {
+        HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
+        httpLoggingInterceptor.setLevel( HttpLoggingInterceptor.Level.BODY );
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                .addInterceptor(httpLoggingInterceptor)
+                .retryOnConnectionFailure(true)
+                .connectTimeout(20, TimeUnit.SECONDS)
+                .readTimeout(10, TimeUnit.SECONDS)
+                .writeTimeout(10, TimeUnit.SECONDS)
+                .addInterceptor(chain -> {
+                    Request request = chain.request();
+                    Request build = request.newBuilder()
+                            .addHeader("Authorization", "Jason ")
+                            .build();
+                    return chain.proceed(build);
+                });
+
         mRetrofit = new Retrofit.Builder()
                 .baseUrl( Constant.BASE_URL )
+                .client(builder.build())
                 .addConverterFactory( GsonConverterFactory.create() )
                 .addCallAdapterFactory( RxJava2CallAdapterFactory.create() )
                 .build();
