@@ -1,11 +1,13 @@
 package com.example.dcct.ui.activity;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextPaint;
 import android.view.LayoutInflater;
 import android.view.View;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -30,7 +32,7 @@ public class LoginAndRegisterActivity extends BaseActivity implements View.OnCli
         mBinding = ActivityLoginRegisterBinding.inflate( LayoutInflater.from( this ) );
         setContentView(mBinding.getRoot());
 
-        setStatusBar(this,getResources().getColor(R.color.colorWhite),true);
+        setStatusBar(this,getResources().getColor(R.color.colorWhite));
 
         mBinding.titleLogin.setOnClickListener(this);
         mBinding.titleRegister.setOnClickListener(this);
