@@ -11,19 +11,26 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.dcct.R;
+import com.example.dcct.utils.GrayFrameLayout;
 
 import java.text.DecimalFormat;
 
@@ -31,8 +38,44 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
-
+        setStatusBar( this, getResources().getColor( R.color.colorPrimary ) );
     }
+
+    /**
+     * 给App所有界面添加一层灰度
+     *
+     * @param name
+     * @param context
+     * @param attrs
+     * @return FrameLayout
+     */
+    /*@Nullable
+    @Override
+    public View onCreateView(@NonNull String name, @NonNull Context context, @NonNull AttributeSet attrs) {
+        try {
+            if ("FrameLayout".equals( name )) {
+                int count = attrs.getAttributeCount();
+                for (int i = 0; i < count; i++) {
+                    String attributeName = attrs.getAttributeName( i );
+                    String attributeValue = attrs.getAttributeValue( i );
+                    if (attributeName.equals( "id" )) {
+                        int id = Integer.parseInt( attributeValue.substring( 1 ) );
+                        String idVal = getResources().getResourceName( id );
+                        if ("android:id/content".equals( idVal )) {
+                            GrayFrameLayout grayFrameLayout = new GrayFrameLayout( context, attrs );
+                            //当Activity的Window设置了BackGround
+                            *//*grayFrameLayout.setBackground( getWindow().getDecorView().getBackground() );*//*
+                            *//*grayFrameLayout.setWindow(getWindow());*//*
+                            return grayFrameLayout;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return super.onCreateView( name, context, attrs );
+    }*/
 
     /**
      * 设置沉浸式界面
@@ -87,50 +130,48 @@ public class BaseActivity extends AppCompatActivity {
         return preferences.getBoolean( "LOGIN_SUCCESS", false );
     }
 
-
     /**
-     * 添加状态栏占位视图
+     * 设置状态栏颜色
      *
-     * @param activity          传入的活动对象
-     * @param color             状态栏背景色,如果为0，则为全屏显示
-     * @param useStatusBarColor 状态栏字体颜色是否设置成深色
+     * @param activity 活动
+     * @param color    颜色值
      */
-    public static void setStatusBar(Activity activity, int color, boolean useStatusBarColor) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { //Build.VERSION_CODES.LOLLIPOP 5.0
-            View decorView = activity.getWindow().getDecorView();
-            int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-            decorView.setSystemUiVisibility( option );
-            if (color != 0) {
-                activity.getWindow().setStatusBarColor( activity.getResources().getColor( R.color.colorWhite ) );
-            } else {
-                activity.getWindow().setStatusBarColor( Color.TRANSPARENT );
+    protected void setStatusBar(Activity activity, int color) {
+        Window window = activity.getWindow();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {//6.0 以上直接设置状态栏颜色
+            //取消设置透明状态栏,使 ContentView 内容不再覆盖状态栏
+            window.clearFlags( WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS );
+            //需要设置这个 flag 才能调用 setStatusBarColor 来设置状态栏颜色
+            window.addFlags( WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS );
+            //设置状态栏颜色
+            window.setStatusBarColor( color );
+            // 去掉系统状态栏下的windowContentOverlay
+            View v = window.findViewById( android.R.id.content );
+            if (v != null) {
+                v.setForeground( null );
             }
-        } else {//4.4到5.0
-            WindowManager.LayoutParams localLayoutParams = activity.getWindow().getAttributes();
-            localLayoutParams.flags = (WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS | localLayoutParams.flags);
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && useStatusBarColor) {
-            activity.getWindow().getDecorView().setSystemUiVisibility( View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR );
+            if (toGrey(color) > 225) {//判定该状态栏颜色条件下，是否要将状态栏图标切换成灰色
+                window.getDecorView().setSystemUiVisibility( View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR );
+            }
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {//5.0 以上直接设置状态栏颜色
+            //取消设置透明状态栏,使 ContentView 内容不再覆盖状态栏
+            window.clearFlags( WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS );
+            //需要设置这个 flag 才能调用 setStatusBarColor 来设置状态栏颜色
+            window.addFlags( WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS );
+            //设置状态栏颜色
+            window.setStatusBarColor( color );
         }
     }
 
-    protected void addStatusViewWithColor(Activity activity, int color) {
-        //设置 paddingTop
-        ViewGroup rootView = (ViewGroup) this.getWindow().getDecorView().findViewById( android.R.id.content );
-        rootView.setPadding( 0, getStatusBarHeight(), 0, 0 );
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            //5.0 以上直接设置状态栏颜色
-            activity.getWindow().setStatusBarColor( color );
-        } else {
-            //根布局添加占位状态栏
-            ViewGroup decorView = (ViewGroup) this.getWindow().getDecorView();
-            View statusBarView = new View( activity );
-            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams( ViewGroup.LayoutParams.MATCH_PARENT,
-                    getStatusBarHeight() );
-            statusBarView.setBackgroundColor( color );
-            decorView.addView( statusBarView, lp );
-        }
+    /**
+     * 把颜色转换成灰度值。
+     * 代码来自 Flyme 示例代码
+     */
+    public static int toGrey(@ColorInt int color) {
+        int blue = Color.blue(color);
+        int green = Color.green(color);
+        int red = Color.red(color);
+        return (red * 38 + green * 75 + blue * 15) >> 7;
     }
 
     /**
@@ -178,7 +219,6 @@ public class BaseActivity extends AppCompatActivity {
 
     /**
      * 利用反射获取状态栏高度
-     *
      * @return statusBar的height
      */
     public int getStatusBarHeight() {

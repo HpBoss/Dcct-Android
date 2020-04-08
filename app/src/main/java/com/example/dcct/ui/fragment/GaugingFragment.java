@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
+import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +16,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
@@ -21,10 +25,7 @@ import com.example.dcct.bean.BackResultData;
 import com.example.dcct.bean.PostQueryEntity;
 import com.example.dcct.bean.QueryResultEntity;
 import com.example.dcct.bean.ReportParcelable;
-import com.example.dcct.model.Impl.QueryModelImp;
-import com.example.dcct.model.QueryModel;
 import com.example.dcct.presenter.QueryPresenter;
-import com.example.dcct.ui.activity.MainActivity;
 import com.example.dcct.ui.adapter.GaugingPageAdapter;
 import com.example.dcct.ui.activity.GaugingReportActivity;
 import com.example.dcct.R;
@@ -62,6 +63,9 @@ public class GaugingFragment extends Fragment implements QueryCallback {
         mMAndFoodFragment = new MAndFoodFragment();
         mFragmentList.add( mMAndMFragment );
         mFragmentList.add( mMAndFoodFragment );
+        //添加过渡动画，测试
+
+
     }
 
     private void initView(View root) {

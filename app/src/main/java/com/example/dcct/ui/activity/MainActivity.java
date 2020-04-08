@@ -2,6 +2,7 @@ package com.example.dcct.ui.activity;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,6 +26,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
@@ -46,7 +48,6 @@ public class MainActivity extends BaseActivity implements GaugingFragment.transm
         super.onCreate(savedInstanceState);
         mBinding = ActivityMainBinding.inflate( LayoutInflater.from( this ) );
         setContentView(mBinding.getRoot());
-//        addStatusViewWithColor(this,getResources().getColor(R.color.colorPrimary));
         initView();
 
     }

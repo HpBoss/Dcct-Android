@@ -6,10 +6,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 
 import com.example.dcct.R;
+import com.example.dcct.base.BaseActivity;
 import com.example.dcct.databinding.ActivityGaugingReportBinding;
 import com.example.dcct.bean.ReportParcelable;
 
-public class GaugingReportActivity extends AppCompatActivity {
+public class GaugingReportActivity extends BaseActivity {
 
     private ActivityGaugingReportBinding mBinding;
     @Override
