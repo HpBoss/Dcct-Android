@@ -2,7 +2,7 @@
 
 1. 先安排几张APP图：
 
-   <img src="image\launch.png" style="zoom:30%;" />             <img src="image\login.png" style="zoom:30%;" />            <img src="image\register.png" style="zoom:30%;" />
+   <img src="image\launch.png" style="zoom:40%;" />             <img src="image\login.png" style="zoom:40%;" />            <img src="image\register.png" style="zoom:30%;" />
    <img src="image\ground.png" style="zoom:30%;" />             <img src="image\gauging.png" style="zoom:30%;" />            <img src="image\gauging.png" style="zoom:30%;" />    
    <img src="image\record.png" style="zoom:30%;" />             <img src="image\report.png" style="zoom:30%;" />
 
