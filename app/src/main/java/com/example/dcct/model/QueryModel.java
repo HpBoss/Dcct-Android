@@ -1,10 +1,8 @@
 package com.example.dcct.model;
 
-import com.example.dcct.base.RegisterAndUnRegister;
 import com.example.dcct.bean.BackResultData;
 import com.example.dcct.bean.PostQueryEntity;
 import com.example.dcct.bean.QueryResultEntity;
-import com.example.dcct.view.QueryCallback;
 
 import java.util.List;
 

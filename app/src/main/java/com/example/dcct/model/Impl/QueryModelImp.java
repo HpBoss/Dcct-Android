@@ -26,7 +26,7 @@ public class QueryModelImp implements QueryModel {
                 .compose( NetWorkApi.applySchedulers( new BaseObserver<BackResultData<List<QueryResultEntity>>>() {
                     @Override
                     public void onSuccess(BackResultData<List<QueryResultEntity>> listBackResultData) {
-                        Log.d( TAG, "查询结果 ==》" + listBackResultData.toString() );
+//                        Log.d( TAG, "查询结果 ==》" + listBackResultData.toString() );
                         returnQueryResult.onComplete(listBackResultData);
                     }
 

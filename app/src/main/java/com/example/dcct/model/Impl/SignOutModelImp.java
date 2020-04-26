@@ -23,7 +23,7 @@ public class SignOutModelImp implements SignOutModel {
                 .compose( NetWorkApi.applySchedulers( new BaseObserver<BackResultData>() {
                     @Override
                     public void onSuccess(BackResultData backResultData) {
-                        Log.d( TAG, "退出登录 ==》" + backResultData.toString() );
+//                        Log.d( TAG, "退出登录 ==》" + backResultData.toString() );
                         returnSignState.onComplete( backResultData );
                     }
 

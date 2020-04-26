@@ -25,7 +25,7 @@ public class CoverModelImp implements CoverModel {
                 .compose( NetWorkApi.applySchedulers( new BaseObserver<BackResultData<List<CoverEntity>>>() {
                     @Override
                     public void onSuccess(BackResultData<List<CoverEntity>> listBackResultData) {
-                        Log.d( TAG, "获取图片url ==》" + listBackResultData.toString() );
+//                        Log.d( TAG, "获取图片url ==》" + listBackResultData.toString() );
                         onReturnListener.onComplete( listBackResultData.getData() );
                     }
 

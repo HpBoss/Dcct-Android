@@ -21,6 +21,10 @@ import android.util.DisplayMetrics;
 
 import java.util.Locale;
 
+import leakcanary.AppWatcher;
+import leakcanary.LeakCanary;
+import leakcanary.internal.AppWatcherInstaller;
+import leakcanary.internal.LeakCanaryFileProvider;
 import me.jessyan.autosize.AutoSize;
 import me.jessyan.autosize.AutoSizeConfig;
 import me.jessyan.autosize.onAdaptListener;

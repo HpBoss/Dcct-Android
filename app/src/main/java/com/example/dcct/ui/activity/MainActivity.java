@@ -46,7 +46,7 @@ public class MainActivity extends BaseActivity implements GaugingFragment.transm
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBinding = ActivityMainBinding.inflate( LayoutInflater.from( this ) );
+        mBinding = ActivityMainBinding.inflate( getLayoutInflater() );
         setContentView(mBinding.getRoot());
         initView();
 

@@ -17,6 +17,7 @@ public class LaunchActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        BaseActivity.setCustomDensity( this,getApplication());
+        setImmersive();
         mBinding = ActivityLaunchBinding.inflate( LayoutInflater.from( this ) );
         setContentView(mBinding.getRoot());
 

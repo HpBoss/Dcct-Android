@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,6 +20,7 @@ import com.example.dcct.bean.PostQueryEntity;
 import com.example.dcct.bean.QueryResultEntity;
 import com.example.dcct.bean.Record;
 import com.example.dcct.bean.ReportParcelable;
+import com.example.dcct.databinding.FragmentRecordBinding;
 import com.example.dcct.presenter.QueryPresenter;
 import com.example.dcct.presenter.RecordPresenter;
 import com.example.dcct.ui.activity.GaugingReportActivity;
@@ -34,24 +36,26 @@ import java.util.Objects;
 public class RecordFragment extends Fragment implements RecordCallback {
 
     private List<Record> mRecordList = new ArrayList<>();
-    private RecyclerView mRecyclerView;
     private long mUid;
     private QueryPresenter mQueryPresenter;
     private RecordPresenter mRecordPresenter;
+    private FragmentRecordBinding mBinding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate( R.layout.fragment_record, container, false );
-        initView( view );
-        return view;
+        mBinding = FragmentRecordBinding.inflate( getLayoutInflater() );
+        return mBinding.getRoot();
     }
 
-    private void initView(View view) {
-        mRecyclerView = view.findViewById( R.id.recordRecycleView );
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated( view, savedInstanceState );
+        //竖直流布局
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager( getActivity() );
-        mRecyclerView.setLayoutManager( linearLayoutManager );
-
-        SharedPreferences preferences = Objects.requireNonNull( getActivity() ).getSharedPreferences( "SHARE_APP_DATA", Context.MODE_PRIVATE );
+        mBinding.recordRecycleView.setLayoutManager( linearLayoutManager );
+        //获取历史记录
+        SharedPreferences preferences = Objects.requireNonNull( getActivity() )
+                .getSharedPreferences( "SHARE_APP_DATA", Context.MODE_PRIVATE );
         mUid = preferences.getLong( "uid", 1 );
         mRecordPresenter = new RecordPresenter();
         mRecordPresenter.attachView( this );
@@ -63,7 +67,7 @@ public class RecordFragment extends Fragment implements RecordCallback {
         if (backResultData.isState()) {
             mRecordList = backResultData.getData();
             RecordHistoryAdapter recordHistoryAdapter = new RecordHistoryAdapter( mRecordList );
-            mRecyclerView.setAdapter( recordHistoryAdapter );
+            mBinding.recordRecycleView.setAdapter( recordHistoryAdapter );
             recordHistoryAdapter.setOnClickItems( position -> {
                 String queryName = mRecordList.get( position ).getQueryName();
                 String drugOne = queryName.substring( 0, queryName.lastIndexOf( "、" ) );
@@ -121,6 +125,6 @@ public class RecordFragment extends Fragment implements RecordCallback {
 
     @Override
     public void showErrorMsg(String msg) {
-
+        Toast.makeText( getActivity(), msg, Toast.LENGTH_SHORT ).show();
     }
 }

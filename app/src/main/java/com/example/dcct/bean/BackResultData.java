@@ -15,14 +15,14 @@ public class BackResultData<T> {
                 "state=" + state +
                 ", data=" + data +
                 ", msg='" + msg + '\'' +
-                ", errCode=" + errCode +
+                ", errCode=" + resultCode +
                 '}';
     }
 
     private boolean state;
     private T data;
     private String msg;
-    private Object errCode;
+    private Object resultCode;
 
     public boolean isState() {
         return state;
@@ -48,12 +48,12 @@ public class BackResultData<T> {
         this.msg = msg;
     }
 
-    public Object getErrCode() {
-        return errCode;
+    public Object getResultCode() {
+        return resultCode;
     }
 
-    public void setErrCode(Object errCode) {
-        this.errCode = errCode;
+    public void setResultCode(Object resultCode) {
+        this.resultCode = resultCode;
     }
 
 }

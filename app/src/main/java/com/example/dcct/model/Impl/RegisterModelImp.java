@@ -25,7 +25,7 @@ public class RegisterModelImp implements RegisterModel {
                 .compose( NetWorkApi.applySchedulers( new BaseObserver<BackResultData>() {
                     @Override
                     public void onSuccess(BackResultData backResultData) {
-                        Log.d( TAG, "注册 ==》" + backResultData.toString() );
+//                        Log.d( TAG, "注册 ==》" + backResultData.toString() );
                         returnRegisterResult.onComplete( backResultData );
                     }
 

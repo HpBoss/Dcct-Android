@@ -11,15 +11,15 @@ import com.example.dcct.R;
 import com.google.android.material.snackbar.Snackbar;
 
 public class SnackBarUtil {
-    public static final int Info = 1;
+    private static final int Info = 1;
     public static final int Confirm = 2;
     public static final int Warning = 3;
     public static final int Alert = 4;
 
-    public static int red = 0xfff44336;
-    public static int green = 0xff4caf50;
-    public static int blue = 0xff2195f3;
-    public static int orange = 0xffffc107;
+    private static int red = 0xfff44336;
+    private static int green = 0xff4caf50;
+    private static int blue = 0xff2195f3;
+    private static int orange = 0xffffc107;
 
     /**
      * 短显示Snackbar，自定义颜色

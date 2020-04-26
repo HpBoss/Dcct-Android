@@ -221,8 +221,8 @@ public class BaseActivity extends AppCompatActivity {
      * 利用反射获取状态栏高度
      * @return statusBar的height
      */
-    public int getStatusBarHeight() {
-        Resources resources = this.getResources();
+    public static int getStatusBarHeight(Activity activity) {
+        Resources resources = activity.getResources();
         int resourceId = resources.getIdentifier( "status_bar_height", "dimen", "android" );
         return resources.getDimensionPixelSize( resourceId );
     }

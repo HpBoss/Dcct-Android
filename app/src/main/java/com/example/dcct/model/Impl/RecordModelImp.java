@@ -25,7 +25,7 @@ public class RecordModelImp implements RecordModel {
                 .compose( NetWorkApi.applySchedulers( new BaseObserver<BackResultData<List<Record>>>() {
                     @Override
                     public void onSuccess(BackResultData<List<Record>> listBackResultData) {
-                        Log.d( TAG, "个人查询记录 ==》" + listBackResultData.toString() );
+//                        Log.d( TAG, "个人查询记录 ==》" + listBackResultData.toString() );
                         returnQueryRecord.onComplete( listBackResultData );
                     }
 

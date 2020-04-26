@@ -7,11 +7,13 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dcct.bean.CoverEntity;
+import com.example.dcct.databinding.FragmentGroundBinding;
 import com.example.dcct.model.CoverModel;
 import com.example.dcct.model.Impl.CoverModelImp;
 import com.example.dcct.presenter.CoverPresenter;
@@ -26,24 +28,28 @@ public class GroundFragment extends Fragment implements ImageUrlCallback {
 
     private List<CoverEntity> cardInformationList = new ArrayList<>();
     private CoverPresenter mCoverPresenter;
-    private RecyclerView mRecyclerView;
+    private FragmentGroundBinding mBinding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate( R.layout.fragment_ground, container, false );
-        initView( root );
-        requestCardInformation();
-        return root;
+        mBinding = FragmentGroundBinding.inflate( getLayoutInflater() );
+        return mBinding.getRoot();
     }
 
-    private void initView(View root) {
-        mRecyclerView = root.findViewById( R.id.recycleview );
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated( view, savedInstanceState );
+        //竖直流布局
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager( getActivity() );
-        mRecyclerView.setLayoutManager( linearLayoutManager );
-        /*recyclerView.addItemDecoration(new DividerItemDecoration(Objects.requireNonNull(getActivity()),DividerItemDecoration.VERTICAL));*///给每一个item添加分割线
-//        recyclerView.setNestedScrollingEnabled(false);//取消recyclerView的滑动效果，因为此时它与最外层的scrollView之间存在滑动冲突
+        mBinding.recycleview.setLayoutManager( linearLayoutManager );
+        requestCardInformation();
+        //给每一个item添加分割线
+        /*recyclerView.addItemDecoration(new DividerItemDecoration(Objects.requireNonNull(getActivity()),DividerItemDecoration.VERTICAL));*/
     }
 
+    /**
+     * 请求图片URL
+     */
     private void requestCardInformation() {
         mCoverPresenter = new CoverPresenter();
         mCoverPresenter.attachView( this );
@@ -62,7 +68,7 @@ public class GroundFragment extends Fragment implements ImageUrlCallback {
     public void onLoadImageUrl(List<CoverEntity> coverEntities) {
         cardInformationList.addAll( coverEntities );
         CardInformationAdapter cardInformationAdapter = new CardInformationAdapter( cardInformationList, getActivity() );
-        mRecyclerView.setAdapter( cardInformationAdapter );
+        mBinding.recycleview.setAdapter( cardInformationAdapter );
     }
 
     @Override

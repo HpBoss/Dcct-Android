@@ -3,6 +3,7 @@ package com.example.dcct.ui.fragment;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
@@ -13,8 +14,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.dcct.base.BaseFragment;
 import com.example.dcct.bean.BackResultData;
 import com.example.dcct.bean.RegisterUserEntity;
+import com.example.dcct.databinding.FragmentRegisterBinding;
 import com.example.dcct.model.Impl.RegisterModelImp;
 import com.example.dcct.model.RegisterModel;
 import com.example.dcct.presenter.RegisterPresenter;
@@ -24,67 +27,53 @@ import com.example.dcct.utils.SnackBarUtil;
 import com.example.dcct.view.RegisterCallback;
 import com.google.android.material.textfield.TextInputLayout;
 
-public class RegisterFragment extends Fragment implements RegisterCallback {
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-    private TextInputLayout textInputLayoutEmail;
-    private TextInputLayout textInputLayoutUserName;
-    private TextInputLayout textInputLayoutPwd;
-    private TextInputLayout textInputLayoutPwdAgain;
+public class RegisterFragment extends BaseFragment implements RegisterCallback {
+
     private String password;
     private String username;
     private String email;
-    private ImageView register;
-    private TextView contentView;
     private RegisterPresenter mRegisterPresenter;
     private isRegisterListener mIsRegisterListener;
+    private FragmentRegisterBinding mBinding;
 
     public RegisterFragment() {
         // Required empty public constructor
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate( savedInstanceState );
-
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate( R.layout.fragment_register, container, false );
-        initView( view );
-        return view;
-    }
-
-    private void initView(View view) {
-        textInputLayoutPwd = view.findViewById( R.id.textInputLayoutPwdr );
-        textInputLayoutEmail = view.findViewById( R.id.textInputLayoutEmail );
-        textInputLayoutUserName = view.findViewById( R.id.textInputLayoutUserName );
-        textInputLayoutPwdAgain = view.findViewById( R.id.textInputLayoutPwdAgain );
-        if (textInputLayoutPwd.getEditText() != null) {
-            textInputLayoutPwd.getEditText().addTextChangedListener( new
-                    PasswordMatchingUtils( textInputLayoutPwd, textInputLayoutPwdAgain, 0 ) );
-        }
-        register = view.findViewById( R.id.iv_register );
-        contentView = view.findViewById( R.id.snackBarHint );
+        mBinding = FragmentRegisterBinding.inflate( getLayoutInflater() );
+        return mBinding.getRoot();
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated( savedInstanceState );
-        if (textInputLayoutPwdAgain.getEditText() != null) {
-            textInputLayoutPwdAgain.getEditText().addTextChangedListener(
-                    new PasswordMatchingUtils( textInputLayoutPwd, textInputLayoutPwdAgain, 1 ) );
-            register.setOnClickListener( v -> {
-                username = textInputLayoutUserName.getEditText().getText().toString();
-                email = textInputLayoutEmail.getEditText().getText().toString();
-                password = textInputLayoutPwd.getEditText().getText().toString();
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated( view, savedInstanceState );
+        //检查输入邮箱格式
+        checkEmailFormat( mBinding.textInputLayoutEmail.getEditText(), mBinding.textInputLayoutEmail);
+        //检测两个输入框中输入的内容是否一致（情景：当第一次密码输入完成）
+        if (mBinding.textInputLayoutPwdr.getEditText() != null) {
+            mBinding.textInputLayoutPwdr.getEditText().addTextChangedListener( new
+                    PasswordMatchingUtils( mBinding.textInputLayoutPwdr, mBinding.textInputLayoutPwdAgain, 0 ) );
+        }
+        //同样需要再次检测两个输入框中的内容是否相同（情景：第二次输入密码，并点击注册按钮）
+        if (mBinding.textInputLayoutPwdAgain.getEditText() != null) {
+            mBinding.textInputLayoutPwdAgain.getEditText().addTextChangedListener(
+                    new PasswordMatchingUtils( mBinding.textInputLayoutPwdr, mBinding.textInputLayoutPwdAgain, 1 ) );
+            mBinding.ivRegister.setOnClickListener( v -> {
+                username = Objects.requireNonNull( mBinding.textInputLayoutUserName.getEditText() ).getText().toString();
+                email = Objects.requireNonNull( mBinding.textInputLayoutEmail.getEditText() ).getText().toString();
+                password = Objects.requireNonNull( mBinding.textInputLayoutPwdr.getEditText() ).getText().toString();
                 if (username.equals( "" ) || email.equals( "" ) || password.equals( "" )) {
-                    SnackBarUtil.ShortSnackbar( contentView, "信息输入不完整！！！", SnackBarUtil.Warning ).show();
+                    SnackBarUtil.ShortSnackbar( mBinding.snackBarHint, "信息输入不完整！！！", SnackBarUtil.Warning ).show();
                 } else {
                     //向服务器提交数据
-                    RegisterUserEntity registerUserEntity = new RegisterUserEntity( username, email, password );
+                    RegisterUserEntity registerUserEntity = new RegisterUserEntity( username, email, MD5Decode32( password ) );
                     mRegisterPresenter = new RegisterPresenter();
                     mRegisterPresenter.attachView( this );
                     mRegisterPresenter.fetchRegisterResult( registerUserEntity );
@@ -97,10 +86,10 @@ public class RegisterFragment extends Fragment implements RegisterCallback {
     @Override
     public void onLoadRegisterData(BackResultData backData) {
         if (backData.isState()) {
-            SnackBarUtil.ShortSnackbar( contentView, "恭喜你，注册成功！！！", SnackBarUtil.Confirm ).show();
+            SnackBarUtil.ShortSnackbar( mBinding.snackBarHint, "恭喜你，注册成功！！！", SnackBarUtil.Confirm ).show();
             mIsRegisterListener.setRegisterToLogin( true );
         } else {
-            SnackBarUtil.ShortSnackbar( contentView, backData.getMsg(), SnackBarUtil.Alert ).show();
+            SnackBarUtil.ShortSnackbar( mBinding.snackBarHint, backData.getMsg(), SnackBarUtil.Alert ).show();
         }
     }
 

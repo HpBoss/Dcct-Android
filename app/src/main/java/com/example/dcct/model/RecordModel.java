@@ -1,9 +1,7 @@
 package com.example.dcct.model;
 
-import com.example.dcct.base.RegisterAndUnRegister;
 import com.example.dcct.bean.BackResultData;
 import com.example.dcct.bean.Record;
-import com.example.dcct.view.RecordCallback;
 
 import java.util.List;
 
