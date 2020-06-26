@@ -34,7 +34,7 @@
    
        @GET(Constant.RECORD_API)
        Call<BackResultData<List<Record>>> getRecords(@Path("uid") long id);
-   
+       //post
        @POST(Constant.SIGN_OUT)
        Call<BackResultData> subSignOutId(@Path( "uid" ) long id);
    }
