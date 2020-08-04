@@ -20,13 +20,13 @@ class LaunchActivity : BaseActivity() {
         Handler().postDelayed({
             preferences = getSharedPreferences("SHARE_APP_TAG", Context.MODE_PRIVATE)
             if (isFirstStart) {
-                activityJump(this@LaunchActivity, GuideActivity::class.java)
+                activityJump(this, GuideActivity::class.java)
                 translatingAnimation_rightToLeft()
             } else {
                 if (isLoginSuccess) { //判断之前是否登录成功
-                    activityJump(this@LaunchActivity, MainActivity::class.java)
+                    activityJump(this, MainActivity::class.java)
                 } else {
-                    activityJump(this@LaunchActivity, LoginAndRegisterActivity::class.java)
+                    activityJump(this, LoginAndRegisterActivity::class.java)
                     translatingAnimation_rightToLeft()
                 }
             }

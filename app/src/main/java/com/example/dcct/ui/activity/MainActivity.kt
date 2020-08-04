@@ -2,6 +2,7 @@ package com.example.dcct.ui.activity
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
@@ -39,7 +40,8 @@ class MainActivity : BaseActivity(), transmitFragment, SignOutCallback {
         val preferences = getSharedPreferences("SHARE_APP_DATA", Context.MODE_PRIVATE)
         mBinding!!.titleUsername.text = preferences.getString("nickname", "XX")
         mBinding!!.titleUsername.setOnClickListener { displayAlertDialog() }
-        /*从服务器获取用户名使用mTitleName显示出来*/mBinding!!.mainToolbar.title = ""
+        /*从服务器获取用户名使用mTitleName显示出来*/
+        mBinding!!.mainToolbar.title = ""
         setSupportActionBar(mBinding!!.mainToolbar)
         oldId = mBinding!!.navView.menu.getItem(0).itemId
         val secondId = mBinding!!.navView.menu.getItem(1).itemId

@@ -50,13 +50,13 @@ dependencies {
     implementation 'com.github.zhpanvip:BannerViewPager:2.6.6'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation 'io.reactivex.rxjava2:rxjava:2.2.13'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.8.1'
-    implementation 'com.squareup.retrofit2:retrofit:2.8.1'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
     implementation 'me.jessyan:autosize:1.2.0'
     implementation 'com.github.f0ris.sweetalert:library:1.6.2'
 
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.2'
-    implementation 'com.squareup.leakcanary:leakcanary-object-watcher-android:2.2'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.4'
+    implementation 'com.squareup.leakcanary:leakcanary-object-watcher-android:2.4'
 }

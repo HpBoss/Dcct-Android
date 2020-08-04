@@ -13,7 +13,8 @@ import com.example.dcct.ui.fragment.LoginFragment.InformationDetermine
 import com.example.dcct.ui.fragment.RegisterFragment
 import com.example.dcct.ui.fragment.RegisterFragment.IsRegisterListener
 
-class LoginAndRegisterActivity : BaseActivity(), View.OnClickListener, InformationDetermine, IsRegisterListener {
+class LoginAndRegisterActivity : BaseActivity(), View.OnClickListener,
+        InformationDetermine, IsRegisterListener {
     private var textPaintLogin: TextPaint? = null
     private var textPaintRegister: TextPaint? = null
     private var mBinding: ActivityLoginRegisterBinding? = null
